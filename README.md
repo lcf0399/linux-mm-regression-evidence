@@ -1,6 +1,6 @@
 # Linux MM Regression Evidence - May 2026
 
-This repository contains a small evidence bundle for two Linux MM performance regression reports. It is meant to make the test method, environment, raw summaries, and current attribution state auditable without putting a large attachment into the mailing-list report.
+This repository contains a small evidence bundle for two Linux MM performance regression reports. It is meant to make the formal test method, environment, raw summaries, and current attribution state auditable without putting a large attachment into the mailing-list report.
 
 The two reports are scoped by workload:
 
@@ -17,15 +17,14 @@ Both workloads were run through the same local experiment framework:
 - Coverage and performance evidence were collected separately. Coverage runs only show direct function-entry hits; clean performance runs have coverage disabled.
 - Formal performance runs use interleaved version order to reduce host-drift bias.
 - The lab formal matrix uses `QEMU_SMP=1/2/4` with the same guest memory, kernel config family, and command-line policy across CPU counts.
-- Release-narrowing runs compare `v6.12`, `v6.18`, and `v6.19` as a sanity check for the introduction range. They are not a replacement for the 9-repeat formal matrix.
-- No commit-level bisection has been completed yet.
+- Separate release-level sanity checks were used to choose a broad reporting range, but they are not part of this compact public evidence bundle. No commit-level bisection has been completed yet.
 
 Primary timing metrics are lower-is-better:
 
 - `cycle_ns_per_page`
 - `advise_ns_per_page` for the `MADV_PAGEOUT` syscall/reclaim-side segment
 
-The exact per-run metadata is preserved in `pipeline_run_env.json`, `execution_order.json`, `*.summary.csv/json`, and `*.raw.csv/json`.
+The exact per-run metadata for the formal evidence is preserved in `pipeline_run_env.json`, `execution_order.json`, `*.summary.csv/json`, and `*.raw.csv/json`.
 
 ## Environment Summary
 
@@ -42,16 +41,6 @@ The formal evidence uses the lab server as the primary timing environment:
 - Timing order: interleaved version order
 - Formal repetitions: 9
 - Performance timing: coverage disabled
-
-The release-narrowing sanity checks include both lab and local runs:
-
-- Local host label in metadata: `kernel-vm`
-- Local host kernel: `Linux 6.8.0-110-generic x86_64`
-- Local host CPU count: 8
-- Local QEMU: `qemu-system-x86_64 8.2.2`
-- Local guest memory: `QEMU_MEM_MB=4096`
-- Release-narrowing versions: `v6.12`, `v6.18`, and `v6.19`
-- Release-narrowing repetitions: 1, used only as a sanity check for the introduction range
 
 The exact per-run environment remains in `pipeline_run_env.json`; this section is only a human-readable summary.
 
@@ -82,7 +71,7 @@ madvise(MADV_PAGEOUT)
 
 The important boundary is the no-swap THP path. In this environment, pageout of a THP-backed anonymous mapping can hit a worst case where swap allocation fails, THP handling/splitting is involved, and the reclaim path retries at page granularity. That is why this should be reported as a THP + `MADV_PAGEOUT` + no-swap refault workflow regression, not as a claim about all swap-backed or all `MADV_PAGEOUT` workloads.
 
-Release narrowing shows `v6.18.19` already in the slow range, but the exact culprit commit is not bisected.
+Separate release-level sanity checks showed `v6.18.19` already in the slow range, but the exact culprit commit is not bisected.
 
 ### mprotect Shared-dirty Toggle
 
@@ -102,17 +91,16 @@ For this shared-dirty workload, the measured path does not form an effective lar
 
 This also explains why the result should not be generalized to all `mprotect()` users. Anonymous THP-oriented `mprotect()` paths can go through huge-PMD/THP handling and do not show the same behavior in the same test suite. The regression claim is therefore scoped to the shared dirty PTE toggle path.
 
-Release narrowing shows `v6.18.19` already in the slow range, but the exact culprit commit is not bisected.
+Separate release-level sanity checks showed `v6.18.19` already in the slow range, but the exact culprit commit is not bisected.
 
 ## Data Selection Policy
 
 This repository only includes the latest citable evidence bundle for the two reports:
 
 - latest lab formal refresh results for the main performance claims
-- latest local/lab release-narrowing results for introduction-range sanity checks
 - separate coverage evidence where useful, kept distinct from clean performance timing
 
-Older screenings, invalid runs, failed runs, instrumentation-contaminated runs, and exploratory intermediate outputs are intentionally not uploaded here. They are kept out of the upstream evidence bundle so the reports stay focused on the latest citable data.
+Older screenings, release-level sanity runs, invalid runs, failed runs, instrumentation-contaminated runs, and exploratory intermediate outputs are intentionally not uploaded here. They are kept out of the upstream evidence bundle so the reports stay focused on the latest citable formal data.
 
 ## Main Caveats
 
@@ -122,4 +110,4 @@ The `MADV_PAGEOUT` claim is scoped to the anonymous THP/no-swap refault/write-to
 
 The `mprotect()` claim is scoped to the shared dirty full-range protection-toggle workload; the cleanest current formal result is the 1CPU lab run, while 2CPU and 4CPU are same-direction supporting evidence with reliability caveats.
 
-No culprit commit has been bisected yet. The release narrowing currently points to `v6.12..v6.18`.
+No culprit commit has been bisected yet. The proposed reporting range remains `v6.12..v6.18` based on separate release-level sanity checks.

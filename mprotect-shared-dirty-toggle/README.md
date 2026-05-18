@@ -28,13 +28,11 @@ Formal lab timing shows `v6.19.9` slower than `v6.12.77`.
 | 2 | 394.7 | 641.7 | -38.5% | robust-only |
 | 4 | 381.1 | 624.8 | -39.0% | partial same direction |
 
-Release narrowing shows `v6.18.19` already in the slow range.
+Separate release-level sanity checks showed `v6.18.19` already in the slow range, but those raw runs are kept out of this compact public evidence bundle.
 
 ## Directories
 
-- `generated-workload/`: generated workload source used by the framework.
-- `experiments/`: formal and release-narrowing experiment profiles.
+- `workload/`: generated workload source used by the framework.
+- `experiments/`: formal experiment profile.
 - `formal-lab/perf_{1,2,4}cpu/`: performance runs with coverage disabled.
 - `formal-lab/coverage_1cpu/`: direct-hit coverage evidence collected separately from clean timing.
-- `release-narrowing/{lab,local}_1cpu/`: release-level narrowing evidence.
-

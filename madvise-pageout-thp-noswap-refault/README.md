@@ -37,13 +37,11 @@ Formal lab timing shows `v6.19.9` slower than `v6.12.77` across `1/2/4` vCPUs.
 | 2 | 1924.7 | 3162.9 | -39.1% |
 | 4 | 1953.1 | 3284.2 | -40.5% |
 
-Release narrowing shows `v6.18.19` already in the slow range.
+Separate release-level sanity checks showed `v6.18.19` already in the slow range, but those raw runs are kept out of this compact public evidence bundle.
 
 ## Directories
 
-- `reproducer/`: standalone reproducer source and helper script.
-- `experiments/`: formal and release-narrowing experiment profiles.
+- `workload/`: standalone workload source and helper script.
+- `experiments/`: formal experiment profile.
 - `formal-lab/perf_{1,2,4}cpu/`: clean performance runs with coverage disabled.
 - `formal-lab/coverage_1cpu/`: direct-hit coverage evidence collected separately from clean timing.
-- `release-narrowing/{lab,local}_1cpu/`: release-level narrowing evidence.
-

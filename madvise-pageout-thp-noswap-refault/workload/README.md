@@ -1,6 +1,6 @@
 # MADV_PAGEOUT Refault Reproducer
 
-This directory contains a standalone userspace reproducer for the
+This directory contains a standalone userspace workload for the
 `MADV_PAGEOUT + anonymous THP + no-swap + refault/write-touch` workflow used
 by the `mm_regression_gen` `madvise_pageout_formal_refresh` profile.
 
@@ -32,9 +32,9 @@ This only checks that the program builds and runs. It is not performance
 evidence.
 
 ```sh
-cd /path/to/kernel-study
+cd /path/to/linux-mm-regression-evidence-2026-05/madvise-pageout-thp-noswap-refault/workload
 REPETITIONS=1 \
-  mm_regression_gen/reproducers/madvise_pageout/run_madvise_pageout_reproducer.sh \
+  ./run_madvise_pageout_reproducer.sh \
   --mapping-kb 4096 --external-rounds 1 --rounds 1 --max-rounds 1 --min-ms 0 --warmup-rounds 0
 ```
 
@@ -43,10 +43,10 @@ REPETITIONS=1 \
 Run this inside the target kernel guest:
 
 ```sh
-cd /path/to/kernel-study
+cd /path/to/linux-mm-regression-evidence-2026-05/madvise-pageout-thp-noswap-refault/workload
 OUT_DIR=/tmp/madvise-pageout-$(uname -r) \
 REPETITIONS=9 \
-  mm_regression_gen/reproducers/madvise_pageout/run_madvise_pageout_reproducer.sh
+  ./run_madvise_pageout_reproducer.sh
 ```
 
 Important fields:

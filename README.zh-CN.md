@@ -1,6 +1,6 @@
 # Linux MM 性能回归证据包 - 2026 年 5 月
 
-这个仓库包含一份精简证据包，用于支撑两个 Linux MM 性能回归报告。它的目标是让实验方法、实验环境、原始摘要和当前归因状态可以被审计，而不是把一大包附件直接塞进 mailing list 报告里。
+这个仓库包含一份精简证据包，用于支撑两个 Linux MM 性能回归报告。它的目标是让正式实验方法、实验环境、原始摘要和当前归因状态可以被审计，而不是把一大包附件直接塞进 mailing list 报告里。
 
 这两个报告按 workload 明确收窄：
 
@@ -17,15 +17,14 @@
 - coverage 和 performance 分开收集。coverage 只用来证明直接函数入口命中；clean performance run 关闭 coverage。
 - 正式 performance run 使用 interleaved version order，降低 host drift 对版本差异的干扰。
 - lab formal matrix 使用 `QEMU_SMP=1/2/4`，在不同 CPU 数下保持相同 guest memory、kernel config 族和 cmdline 口径。
-- release narrowing run 比较 `v6.12`、`v6.18`、`v6.19`，只作为引入范围的 sanity check，不能替代 9-repeat formal matrix。
-- 目前还没有做完 commit-level bisection。
+- 单独做过 release-level sanity check，用来选择较宽的报告范围；这部分不是当前公开精简证据包的一部分。目前还没有做完 commit-level bisection。
 
 主要 timing metrics 都是越低越好：
 
 - `cycle_ns_per_page`
 - `MADV_PAGEOUT` syscall/reclaim 主段使用 `advise_ns_per_page` 作为辅助指标
 
-精确的逐次运行元数据保留在 `pipeline_run_env.json`、`execution_order.json`、`*.summary.csv/json` 和 `*.raw.csv/json` 中。
+formal 证据的精确逐次运行元数据保留在 `pipeline_run_env.json`、`execution_order.json`、`*.summary.csv/json` 和 `*.raw.csv/json` 中。
 
 ## 实验环境摘要
 
@@ -42,16 +41,6 @@
 - timing 顺序：interleaved version order
 - formal repetitions：9
 - performance timing：关闭 coverage
-
-release narrowing sanity check 同时保留 lab 和 local：
-
-- local host label：`kernel-vm`
-- local host kernel：`Linux 6.8.0-110-generic x86_64`
-- local host CPU 数：8
-- local QEMU：`qemu-system-x86_64 8.2.2`
-- local guest memory：`QEMU_MEM_MB=4096`
-- release narrowing 版本：`v6.12`、`v6.18`、`v6.19`
-- release narrowing repetitions：1，只用于判断引入范围的 sanity check
 
 精确的逐次运行环境仍以 `pipeline_run_env.json` 为准；这里是给人快速阅读的摘要。
 
@@ -82,7 +71,7 @@ madvise(MADV_PAGEOUT)
 
 关键边界是 no-swap THP 路径。在这个环境里，对 THP-backed anonymous mapping 做 pageout，会遇到 swap allocation 失败、THP handling/splitting 参与、reclaim 路径按页粒度重试的 worst case。因此上报时应写成 THP + `MADV_PAGEOUT` + no-swap refault workflow regression，而不是声称所有 swap-backed 或所有 `MADV_PAGEOUT` workload 都回归。
 
-release narrowing 显示 `v6.18.19` 已进入慢路径，但目前还没有 bisect 到具体 culprit commit。
+单独做过的 release-level sanity check 显示 `v6.18.19` 已进入慢路径，但目前还没有 bisect 到具体 culprit commit。
 
 ### mprotect shared-dirty toggle
 
@@ -102,17 +91,16 @@ change_pte_range()
 
 这也解释了为什么不能把结果泛化到所有 `mprotect()` 用户。同一测试套件里的 anonymous THP-oriented `mprotect()` 路径可以进入 huge-PMD/THP handling，并不表现出同样行为。因此回归结论应限定在 shared dirty PTE toggle path。
 
-release narrowing 显示 `v6.18.19` 已进入慢路径，但目前还没有 bisect 到具体 culprit commit。
+单独做过的 release-level sanity check 显示 `v6.18.19` 已进入慢路径，但目前还没有 bisect 到具体 culprit commit。
 
 ## 数据取舍策略
 
 这个仓库只放两个报告当前最新、可引用的证据包：
 
 - 用于主要性能结论的最新 lab formal refresh 结果
-- 用于 introduction range sanity check 的最新 local/lab release narrowing 结果
 - 必要的 coverage 证据，但和 clean performance timing 分开保存
 
-旧 screening、无效 run、失败 run、被 instrumentation 污染的 run、探索性中间产物，都不上传到这里。这样上游证据包只保留当前最新、可引用的数据，不把旧调查历史混进报告。
+旧 screening、release-level sanity run、无效 run、失败 run、被 instrumentation 污染的 run、探索性中间产物，都不上传到这里。这样上游证据包只保留当前最新、可引用的 formal 数据，不把旧调查历史混进报告。
 
 ## 主要限制条件
 
@@ -122,4 +110,4 @@ release narrowing 显示 `v6.18.19` 已进入慢路径，但目前还没有 bise
 
 `mprotect()` 的结论只限定在 shared dirty full-range protection-toggle workload 上；当前最干净的 formal 结果是 lab 1CPU run，2CPU 和 4CPU 是同方向的补充证据，但带有可靠性限制。
 
-目前还没有 bisect 到具体 culprit commit。当前 release narrowing 指向 `v6.12..v6.18` 这个范围。
+目前还没有 bisect 到具体 culprit commit。基于单独的 release-level sanity check，建议报告范围仍写成 `v6.12..v6.18`。
