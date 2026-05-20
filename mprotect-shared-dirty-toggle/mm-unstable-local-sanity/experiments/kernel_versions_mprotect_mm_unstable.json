@@ -1,0 +1,27 @@
+{
+  "source": "local git clone of https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git",
+  "resolved_on": "2026-05-18",
+  "families": [
+    {
+      "family": "6.12",
+      "exact_version": "6.12.77",
+      "tarball_url": "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.12.77.tar.xz",
+      "local_tree": "linux-v6.12",
+      "prepared": true
+    },
+    {
+      "family": "6.19",
+      "exact_version": "6.19.9",
+      "tarball_url": "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.19.9.tar.xz",
+      "local_tree": "linux-v6.19",
+      "prepared": true
+    },
+    {
+      "family": "mm-unstable",
+      "exact_version": "7.1.0-rc3-mm-unstable-444fc9435e57",
+      "tarball_url": "git+https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git@444fc9435e57157fcf30fc99aee44997f3458641",
+      "local_tree": "linux-mm-unstable",
+      "prepared": true
+    }
+  ]
+}

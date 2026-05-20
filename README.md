@@ -4,8 +4,9 @@ This repository contains a small evidence bundle for two Linux MM performance re
 
 The two reports are scoped by workload:
 
-- `madvise-pageout-thp-noswap-refault/`: `madvise(MADV_PAGEOUT)` on an anonymous THP/no-swap refault workflow.
+- `madvise-pageout-thp-noswap-refault/`: `madvise(MADV_PAGEOUT)` on an anonymous THP/no-swap reclaim-failure path. The directory name preserves the wording from the original report, but the current description should not imply that the pages were actually paged out and faulted back in.
 - `mprotect-shared-dirty-toggle/`: repeated `mprotect()` toggling over a shared dirty PTE mapping.
+- `analysis/`: local review notes, upstream feedback, patch analysis, and historical four-case attribution material. This is a staging area; what to publish can be decided later.
 
 This is not a broad benchmark suite. Each claim is limited to the workload and environment described below.
 
@@ -23,6 +24,11 @@ Primary timing metrics are lower-is-better:
 
 - `cycle_ns_per_page`
 - `advise_ns_per_page` for the `MADV_PAGEOUT` syscall/reclaim-side segment
+
+Here, `cycle` means one complete workload iteration, not CPU cycles.
+`cycle_ns_per_page` is wall-clock nanoseconds per page per workload iteration.
+The name is kept for compatibility with the local framework, but it should be
+explained this way in upstream discussion to avoid ambiguity.
 
 The exact per-run metadata for the formal evidence is preserved in `pipeline_run_env.json`, `execution_order.json`, `*.summary.csv/json`, and `*.raw.csv/json`.
 
@@ -48,7 +54,7 @@ The exact per-run environment remains in `pipeline_run_env.json`; this section i
 
 The attribution notes below are mechanism interpretation. The formal performance claims still rely on the clean timing runs with coverage/probe instrumentation disabled.
 
-### MADV_PAGEOUT / THP / No-swap Refault
+### MADV_PAGEOUT / THP / No-swap Reclaim Failure
 
 The current interpretation is not a generic `madvise()` slowdown and not a generic `MADV_PAGEOUT` slowdown.
 
@@ -57,9 +63,11 @@ The regression is scoped to this workflow:
 1. map 16 MiB anonymous memory
 2. let the mapping use the default THP path
 3. run `madvise(MADV_PAGEOUT)` in a guest with no configured swap
-4. refault/write-touch the mapping
+4. write-touch the mapping as the second half of the workload iteration
 
-The timing split points to the `MADV_PAGEOUT` / reclaim part, not the refault touch part. Coverage and follow-up path validation point to the same reclaim/swap-failure chain:
+Upstream feedback correctly pointed out that with no swap configured, this should not be described as a real pageout/refault case. A more accurate description is a `MADV_PAGEOUT` anon/THP no-swap reclaim/swap-allocation-failure path; the later write-touch is part of the workload iteration.
+
+The timing split points to the `MADV_PAGEOUT` / reclaim part. Coverage and follow-up path validation point to the same reclaim/swap-failure chain:
 
 ```text
 madvise(MADV_PAGEOUT)
@@ -69,7 +77,39 @@ madvise(MADV_PAGEOUT)
   -> swap allocation failure path
 ```
 
-The important boundary is the no-swap THP path. In this environment, pageout of a THP-backed anonymous mapping can hit a worst case where swap allocation fails, THP handling/splitting is involved, and the reclaim path retries at page granularity. That is why this should be reported as a THP + `MADV_PAGEOUT` + no-swap refault workflow regression, not as a claim about all swap-backed or all `MADV_PAGEOUT` workloads.
+Several local 1CPU ftrace/smaps attribution runs were added on 2026-05-19. The
+raw runs are now grouped under:
+
+```text
+madvise-pageout-thp-noswap-refault/attribution/runs/local/
+madvise-pageout-thp-noswap-refault/attribution/summaries/local-ftrace-20260519.zh-CN.md
+```
+
+These local and lab reruns are not clean timing evidence, but the path breakdown shows that the
+additional `v6.19.9` time is concentrated under `reclaim_pages()` /
+`shrink_folio_list()`, and `split_folio_to_list()` is hit 16 times on
+`v6.19.9` in THP-backed local short runs.
+
+The lab ftrace/smaps attribution has been consolidated under:
+
+```text
+madvise-pageout-thp-noswap-refault/attribution/summaries/lab-1cpu-20260520.zh-CN.md
+madvise-pageout-thp-noswap-refault/attribution/summaries/lab-multicpu-followup-20260520.zh-CN.md
+madvise-pageout-thp-noswap-refault/attribution/runs/lab/
+```
+
+The more important new caveat is page state: local and lab smaps show that in the
+default-THP and explicit `thp=hugepage` runs, `v6.12.77` actually had
+`AnonHugePages=0 kB`, while `v6.19.9` had `AnonHugePages=16384 kB`. In the
+explicit `thp=nohugepage` same-state control, neither kernel hit
+`split_folio_to_list()` and the local short run no longer showed an
+old-version-faster signal.
+
+The current interpretation is therefore narrower: the signal is strongly tied
+to actual THP backing and the no-swap reclaim split/failure path. Future
+upstream wording should correct the original same-state regression framing and
+ask whether the no-swap THP split fast-fail direction is still useful as an
+optimization discussion.
 
 Separate release-level sanity checks showed `v6.18.19` already in the slow range, but the exact culprit commit is not bisected.
 
@@ -89,24 +129,37 @@ change_pte_range()
 
 For this shared-dirty workload, the measured path does not form an effective large PTE batch. Batch-probe attribution showed `nr_ptes=1` for the shared-dirty path. That means the extra folio lookup, batch-size query, helper dispatch, and batch commit machinery are paid per 4 KiB PTE, but there is no batch-size amortization.
 
+After upstream feedback, two follow-up checks were added:
+
+- `mm-unstable-lab-sanity/`: current akpm/mm `mm-unstable` commit
+  `444fc9435e57` partially mitigates the synthetic shared-dirty signal
+  versus `v6.19.9` by about 6.6-13.5% in the lab CPU/memory matrix, closing
+  about 18-37% of the `v6.12.77 -> v6.19.9` gap, but it does not restore
+  `v6.12.77`-level timing in this workload.
+- `state-audit-lab/`: a state-shape audit across `v6.12.77`, `v6.19.9`, and
+  `mm-unstable` found the successful runs all use the same 4 KiB shared-dirty
+  PTE mapping shape: 16384 present pages before/after, no THP backing, one
+  final VMA, and no semantic mismatches. This supports treating mprotect as a
+  same-state comparison, unlike the corrected `MADV_PAGEOUT` follow-up.
+
 This also explains why the result should not be generalized to all `mprotect()` users. Anonymous THP-oriented `mprotect()` paths can go through huge-PMD/THP handling and do not show the same behavior in the same test suite. The regression claim is therefore scoped to the shared dirty PTE toggle path.
 
 Separate release-level sanity checks showed `v6.18.19` already in the slow range, but the exact culprit commit is not bisected.
 
 ## Data Selection Policy
 
-This repository only includes the latest citable evidence bundle for the two reports:
+The formal workload directories include the latest citable evidence bundle for the two reports:
 
 - latest lab formal refresh results for the main performance claims
 - separate coverage evidence where useful, kept distinct from clean performance timing
 
-Older screenings, release-level sanity runs, invalid runs, failed runs, instrumentation-contaminated runs, and exploratory intermediate outputs are intentionally not uploaded here. They are kept out of the upstream evidence bundle so the reports stay focused on the latest citable formal data.
+Older screenings, release-level sanity runs, invalid runs, failed runs, instrumentation-contaminated runs, and exploratory intermediate outputs are kept out of the minimal public evidence bundle by default. The `analysis/` directory is a local staging area for broader notes and historical material; it should be reviewed before publishing.
 
 ## Main Caveats
 
 The reports are not claiming generic `madvise()` or generic `mprotect()` regressions.
 
-The `MADV_PAGEOUT` claim is scoped to the anonymous THP/no-swap refault/write-touch workflow.
+The `MADV_PAGEOUT` claim is scoped to an anonymous THP/no-swap `MADV_PAGEOUT` reclaim-failure + write-touch iteration workflow; a real pageout/refault has not been established. The new local + lab attribution shows this is not a same-actual-THP-state comparison.
 
 The `mprotect()` claim is scoped to the shared dirty full-range protection-toggle workload; the cleanest current formal result is the 1CPU lab run, while 2CPU and 4CPU are same-direction supporting evidence with reliability caveats.
 
