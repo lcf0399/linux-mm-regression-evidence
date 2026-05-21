@@ -63,6 +63,6 @@ comparison.
 - `experiments/`: formal experiment profile.
 - `formal-lab/perf_{1,2,4}cpu/`: performance runs with coverage disabled.
 - `formal-lab/coverage_1cpu/`: direct-hit coverage evidence collected separately from clean timing.
-- `mm-unstable-local-sanity/`: local sanity check against akpm/mm `mm-unstable` commit `444fc9435e57`; this is useful for responding to Pedro/David's optimization discussion, but is not formal lab evidence.
+- `mm-unstable-local-sanity/`: local sanity check against akpm/mm `mm-unstable` commit `444fc9435e57`; this is follow-up context for the small-folio mprotect optimization discussion and is not formal lab evidence.
 - `mm-unstable-lab-sanity/`: lab sanity matrix against the same `mm-unstable` commit; it shows partial mitigation versus v6.19, but not a return to v6.12-level timing.
 - `state-audit-lab/`: lab state-shape audit for the shared-dirty mapping; it is not timing evidence, but supports the same-state comparison assumption.

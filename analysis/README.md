@@ -1,13 +1,20 @@
-# Analysis and Upstream Feedback Index
+# Supplementary Analysis and Upstream Feedback
 
-This directory is a local review/staging area. It is not necessarily part of
-the minimal public evidence bundle. Before publishing this directory, review
-which notes are useful to upstream and which ones are only local history.
+This directory contains supplementary notes that help explain the current
+state of the two reports, the maintainer feedback received so far, and the
+follow-up checks performed after the initial mailing-list submission.
 
-Some files here are copied from `mm_regression_gen/` or the repository root for
-staging. The original paths are intentionally kept for now so older reports,
-mail drafts, and local references do not break. They can be removed later after
-the upstream follow-up and lab reruns settle.
+The files here are not the primary performance evidence. For citable timing
+and coverage data, use the workload directories:
+
+```text
+madvise-pageout-thp-noswap-refault/
+mprotect-shared-dirty-toggle/
+```
+
+The analysis notes are included for transparency and provenance. Some of them
+refer to historical investigation state and should be read together with the
+top-level README and the workload-specific README files.
 
 ## Files
 

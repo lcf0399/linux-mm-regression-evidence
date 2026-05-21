@@ -1,18 +1,21 @@
 # Linux MM Regression Evidence - May 2026
 
-This repository contains a small evidence bundle for two Linux MM performance regression reports. It is meant to make the formal test method, environment, raw summaries, and current attribution state auditable without putting a large attachment into the mailing-list report.
+This repository contains a curated evidence bundle for two Linux MM performance
+regression reports. It documents the formal test method, environment, raw
+summaries, and current attribution state so that reviewers can audit the
+reported results directly.
 
 The two reports are scoped by workload:
 
-- `madvise-pageout-thp-noswap-refault/`: `madvise(MADV_PAGEOUT)` on an anonymous THP/no-swap reclaim-failure path. The directory name preserves the wording from the original report, but the current description should not imply that the pages were actually paged out and faulted back in.
+- `madvise-pageout-thp-noswap-refault/`: `madvise(MADV_PAGEOUT)` on an anonymous THP/no-swap reclaim-failure path. The directory name preserves the wording from the original report; the current scope does not claim that the pages were actually paged out and faulted back in.
 - `mprotect-shared-dirty-toggle/`: repeated `mprotect()` toggling over a shared dirty PTE mapping.
-- `analysis/`: local review notes, upstream feedback, patch analysis, and historical four-case attribution material. This is a staging area; what to publish can be decided later.
+- `analysis/`: supplementary analysis notes, upstream-feedback records, patch analysis, and historical attribution material. These files provide context for follow-up discussion; the formal evidence remains in the workload directories.
 
 This is not a broad benchmark suite. Each claim is limited to the workload and environment described below.
 
 ## Experiment Method
 
-Both workloads were run through the same local experiment framework:
+Both workloads were run through the same project experiment framework:
 
 - Source-calibrated workloads target concrete Linux `mm/*.c` paths and export per-page timing metrics.
 - Coverage and performance evidence were collected separately. Coverage runs only show direct function-entry hits; clean performance runs have coverage disabled.
@@ -27,8 +30,8 @@ Primary timing metrics are lower-is-better:
 
 Here, `cycle` means one complete workload iteration, not CPU cycles.
 `cycle_ns_per_page` is wall-clock nanoseconds per page per workload iteration.
-The name is kept for compatibility with the local framework, but it should be
-explained this way in upstream discussion to avoid ambiguity.
+The name is retained for compatibility with the experiment data schema, but it
+should be interpreted as a wall-clock duration, not a hardware cycle count.
 
 The exact per-run metadata for the formal evidence is preserved in `pipeline_run_env.json`, `execution_order.json`, `*.summary.csv/json`, and `*.raw.csv/json`.
 
@@ -48,7 +51,7 @@ The formal evidence uses the lab server as the primary timing environment:
 - Formal repetitions: 9
 - Performance timing: coverage disabled
 
-The exact per-run environment remains in `pipeline_run_env.json`; this section is only a human-readable summary.
+The exact per-run environment remains in `pipeline_run_env.json`; this section is a compact summary.
 
 ## Current Attribution
 
@@ -77,26 +80,22 @@ madvise(MADV_PAGEOUT)
   -> swap allocation failure path
 ```
 
-Several local 1CPU ftrace/smaps attribution runs were added on 2026-05-19. The
-raw runs are now grouped under:
+Several local and lab ftrace/smaps attribution runs were added after upstream
+feedback. The public repository keeps the attribution summaries and scripts
+under:
 
 ```text
-madvise-pageout-thp-noswap-refault/attribution/runs/local/
 madvise-pageout-thp-noswap-refault/attribution/summaries/local-ftrace-20260519.zh-CN.md
-```
-
-These local and lab reruns are not clean timing evidence, but the path breakdown shows that the
-additional `v6.19.9` time is concentrated under `reclaim_pages()` /
-`shrink_folio_list()`, and `split_folio_to_list()` is hit 16 times on
-`v6.19.9` in THP-backed local short runs.
-
-The lab ftrace/smaps attribution has been consolidated under:
-
-```text
 madvise-pageout-thp-noswap-refault/attribution/summaries/lab-1cpu-20260520.zh-CN.md
 madvise-pageout-thp-noswap-refault/attribution/summaries/lab-multicpu-followup-20260520.zh-CN.md
-madvise-pageout-thp-noswap-refault/attribution/runs/lab/
+madvise-pageout-thp-noswap-refault/attribution/scripts/
 ```
+
+These attribution reruns are not clean timing evidence. The summaries report
+that the additional `v6.19.9` time is concentrated under `reclaim_pages()` /
+`shrink_folio_list()`, and that `split_folio_to_list()` appears in THP-backed
+short runs. Bulky raw trace/log directories are not part of the compact public
+bundle unless specifically requested for follow-up debugging.
 
 The more important new caveat is page state: local and lab smaps show that in the
 default-THP and explicit `thp=hugepage` runs, `v6.12.77` actually had
@@ -106,10 +105,10 @@ explicit `thp=nohugepage` same-state control, neither kernel hit
 old-version-faster signal.
 
 The current interpretation is therefore narrower: the signal is strongly tied
-to actual THP backing and the no-swap reclaim split/failure path. Future
-upstream wording should correct the original same-state regression framing and
-ask whether the no-swap THP split fast-fail direction is still useful as an
-optimization discussion.
+to actual THP backing and the no-swap reclaim split/failure path. The current
+follow-up position is to treat the original same-state regression framing as
+too broad and, if useful to maintainers, discuss the no-swap THP split/failure
+path as a narrower optimization topic.
 
 Separate release-level sanity checks showed `v6.18.19` already in the slow range, but the exact culprit commit is not bisected.
 
@@ -153,7 +152,7 @@ The formal workload directories include the latest citable evidence bundle for t
 - latest lab formal refresh results for the main performance claims
 - separate coverage evidence where useful, kept distinct from clean performance timing
 
-Older screenings, release-level sanity runs, invalid runs, failed runs, instrumentation-contaminated runs, and exploratory intermediate outputs are kept out of the minimal public evidence bundle by default. The `analysis/` directory is a local staging area for broader notes and historical material; it should be reviewed before publishing.
+Older screenings, release-level sanity runs, invalid runs, failed runs, instrumentation-contaminated runs, and exploratory intermediate outputs are kept out of the minimal public evidence bundle by default. The `analysis/` directory contains supplementary notes and should not be treated as a replacement for the formal workload evidence.
 
 ## Main Caveats
 

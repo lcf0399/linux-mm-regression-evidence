@@ -27,11 +27,10 @@ It does not claim that all `MADV_PAGEOUT` workloads regress.
 
 Formal lab timing shows `v6.19.9` slower than `v6.12.77` across `1/2/4` vCPUs.
 After upstream review, the important caveat is that these formal timing runs
-did not record smaps/page-state. New local attribution runs found that actual
-THP backing can differ between the two kernels in this workload shape.
-Therefore, the timing table below remains the original formal timing result,
-but the mechanism claim needs a lab page-state check before it should be
-described as a same-state THP regression.
+did not record smaps/page-state. Subsequent local and lab attribution runs
+found that actual THP backing can differ between the two kernels in this
+workload shape. Therefore, the timing table below remains the original formal
+timing result, but it should not be described as a same-state THP regression.
 
 `cycle_ns_per_page`:
 
@@ -60,7 +59,7 @@ Separate release-level sanity checks showed `v6.18.19` already in the slow range
 - `experiments/`: formal experiment profile.
 - `formal-lab/perf_{1,2,4}cpu/`: clean performance runs with coverage disabled.
 - `formal-lab/coverage_1cpu/`: direct-hit coverage evidence collected separately from clean timing.
-- `attribution/`: local ftrace/smaps follow-up for the upstream request for
+- `attribution/`: local and lab ftrace/smaps follow-up for the upstream request for
   path breakdown. The current local result points at `reclaim_pages()` /
   `shrink_folio_list()` and repeated `split_folio_to_list()` hits on
   `v6.19.9`, but also shows a critical caveat: local `v6.12.77` often has
