@@ -19,4 +19,6 @@ Reliability note: `1/2/4/8 CPU` completed 9/9 runs for all three versions. The
 `16 CPU` row had one `v6.12.77` QEMU failure and is supporting trend evidence.
 
 Raw runner directories are excluded from the compact public bundle by
-`.gitignore`; only curated metadata and launch context are kept here.
+`.gitignore`. The `results/` directory keeps the compact citable artifacts for
+each CPU/memory row: `summary`, `raw`, `pipeline_run_env.json`, and
+`execution_order.json`.

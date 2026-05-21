@@ -63,3 +63,7 @@ cost，而不是 workload-state mismatch comparison。
 - `mm-unstable-lab-sanity/`：small-folio optimization 讨论使用的 lab follow-up matrix。
 - `state-audit-lab/`：支持 same-state comparison assumption 的 lab state-shape audit。
 - `mm-unstable-local-sanity/`：仅作本地 follow-up context。
+
+follow-up 目录中的精简 `results/` 子目录保存每个 CPU/memory 行可审计的
+`summary`、`raw`、`pipeline_run_env.json` 和 `execution_order.json`。完整 runner
+目录和冗长 launch logs 默认不放入公开证据包，除非后续 debug 需要。

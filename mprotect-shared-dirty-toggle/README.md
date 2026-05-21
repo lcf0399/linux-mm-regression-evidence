@@ -66,3 +66,8 @@ comparison.
 - `mm-unstable-lab-sanity/`: lab follow-up matrix for the small-folio optimization discussion.
 - `state-audit-lab/`: lab state-shape audit supporting the same-state comparison assumption.
 - `mm-unstable-local-sanity/`: local follow-up context only.
+
+For the follow-up directories, compact `results/` subdirectories contain the
+auditable `summary`, `raw`, `pipeline_run_env.json`, and `execution_order.json`
+files for each CPU/memory row. Full runner directories and verbose launch logs
+are excluded from the public bundle unless they become necessary for debugging.

@@ -19,5 +19,6 @@ Matrix: `1/2/4 CPU` at 14336 MiB, `8 CPU` at 16384 MiB, and `16 CPU` at
 The compact conclusion is in the parent workload README. The detailed state
 summary is in `summary-20260520.md` and `summary-20260520.zh-CN.md`.
 
-Raw runner directories and launch logs are excluded from the compact public
-bundle by `.gitignore`.
+Raw runner directories and verbose launch logs are excluded from the compact
+public bundle by `.gitignore`. The `results/` directory keeps compact citable
+state-audit artifacts for each CPU/memory row.

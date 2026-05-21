@@ -15,4 +15,5 @@ akpm/mm mm-unstable 444fc9435e57
 精简结论在父级 workload README。详细 state summary 在 `summary-20260520.md`
 和 `summary-20260520.zh-CN.md`。
 
-raw runner 目录和 launch log 由 `.gitignore` 排除在精简公开证据包之外。
+raw runner 目录和冗长 launch log 由 `.gitignore` 排除在精简公开证据包之外。
+`results/` 目录保存每个 CPU/memory 行的精简可引用 state-audit 材料。
