@@ -6,7 +6,7 @@
 
 - `madvise-pageout-thp-noswap-refault/`：匿名 THP、guest 无 swap、`MADV_PAGEOUT` 触发的 no-swap reclaim-failure path。目录名保留了原邮件里的 `refault` 说法；当前证据范围不声称页面真的被 page out 后 refault。
 - `mprotect-shared-dirty-toggle/`：shared dirty PTE 映射上的重复 `mprotect()` protection toggle。
-- `analysis/`：补充分析材料、上游反馈记录、patch 分析和历史归因材料。它用于解释后续讨论背景；正式证据仍以各 workload 目录为准。
+- `analysis/`：整理后的技术补充、patch 分析和短版历史摘要。私有上游提交流程复盘不放入这个公开 evidence bundle；正式证据仍以各 workload 目录为准。
 
 这不是一个广泛 benchmark suite。每个结论都只限定在下面描述的 workload 和实验环境内。
 

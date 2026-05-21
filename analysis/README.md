@@ -1,54 +1,38 @@
-# Supplementary Analysis and Upstream Feedback
+# Supplementary Technical Analysis
 
-This directory contains supplementary notes that help explain the current
-state of the two reports, the maintainer feedback received so far, and the
-follow-up checks performed after the initial mailing-list submission.
+This directory contains curated technical notes that supplement the workload
+evidence. It does not contain private mailing workflow notes or raw experiment
+history.
 
-The files here are not the primary performance evidence. For citable timing
-and coverage data, use the workload directories:
+Use the workload directories as the source of truth for current claims:
 
 ```text
 madvise-pageout-thp-noswap-refault/
 mprotect-shared-dirty-toggle/
 ```
 
-The analysis notes are included for transparency and provenance. Some of them
-refer to historical investigation state and should be read together with the
-top-level README and the workload-specific README files.
-
 ## Files
 
 - `confirmed_regressions_refresh_2026-05-13.zh-CN.md`
-  - Formal-refresh summary for `mprotect/shared_dirty_full_toggle_64m` and the
-    original `madvise/pageout_refault_anon_16m` report.
-  - Records the lab `1/2/4 CPU` clean performance matrix and separate coverage
-    evidence.
+  - Short historical summary of the original lab formal timing refresh.
+  - Current caveats are in the workload README files.
 
 - `four_case_root_cause_line_level_attribution.zh-CN.md`
-  - Historical four-case line-level attribution note.
-  - Currently best treated as historical analysis/method material. The active
-    upstream-facing focus is `mprotect` and `madvise`; older `damon` and
-    `readahead` signals have been downgraded.
+  - Short historical index for the earlier four-case source-attribution note.
+  - The long internal note is not part of this compact public evidence bundle.
 
 - `mprotect_mm_unstable_patch_analysis_2026-05-19.zh-CN.md`
-  - Local analysis of Pedro's small-folio `mprotect()` optimization series.
-  - Connects the patchset to the earlier `nr_ptes == 1` / fixed per-PTE cost
-    hypothesis and the local/lab `mm-unstable` sanity results.
+  - Technical analysis of Pedro's small-folio `mprotect()` optimization and
+    how it relates to the shared-dirty `nr_ptes == 1` hypothesis.
 
-- `upstream_submission_feedback.zh-CN.md`
-  - Notes from the first upstream submission attempt and maintainer feedback.
-  - Covers SMTP/webmail issues, stale maintainer addresses, synthetic workload
-    scope, and the corrected `madvise` no-swap interpretation.
+- `run_lab_followup_20260520_madvise_mprotect.sh`
+  - Lab orchestration helper used for the 2026-05-20 follow-up runs.
 
-## Caveats
+## Boundaries
 
-- The `mprotect` `mm-unstable` lab sanity result shows that Pedro's optimization
-  reduces the synthetic signal, but it does not bring the workload back to the
-  `v6.12` level. It should not be described as fully fixed.
-- The original `madvise` directory name contains `refault`, but upstream
-  feedback clarified that the no-swap workload should be described as a
-  `MADV_PAGEOUT` anon/THP no-swap reclaim-failure path, not a proven real
-  pageout/refault workflow.
-- Older four-case wording may reflect historical state. Prefer the current
-  top-level README and the newer analysis notes when preparing upstream
-  follow-ups.
+- The `madvise` current scope is not a proven real pageout/refault regression
+  and not a same-state THP regression.
+- The `mprotect` current scope is a synthetic/source-calibrated shared-dirty
+  PTE workload, not a generic `mprotect()` regression claim.
+- Private upstream-submission process notes are kept outside this public
+  evidence repository.

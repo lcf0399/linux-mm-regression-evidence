@@ -1,8 +1,8 @@
-# mprotect mm-unstable / Pedro small-folio optimization 分析
+# mprotect mm-unstable / Pedro small-folio optimization follow-up
 
 日期：2026-05-19 UTC
 
-本文记录对 Pedro Falcato 的 `mprotect` micro-optimization patchset 的本地分析，并把它和我们此前对 `mprotect/shared_dirty_full_toggle_64m` 的机制猜测对齐。
+本文记录对 Pedro Falcato 的 `mprotect` micro-optimization patchset 的技术分析，并把它和此前对 `mprotect/shared_dirty_full_toggle_64m` 的机制猜测、local sanity、lab sanity 和 state-shape audit 对齐。
 
 ## 背景
 

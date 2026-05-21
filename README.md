@@ -9,7 +9,7 @@ The two reports are scoped by workload:
 
 - `madvise-pageout-thp-noswap-refault/`: `madvise(MADV_PAGEOUT)` on an anonymous THP/no-swap reclaim-failure path. The directory name preserves the wording from the original report; the current scope does not claim that the pages were actually paged out and faulted back in.
 - `mprotect-shared-dirty-toggle/`: repeated `mprotect()` toggling over a shared dirty PTE mapping.
-- `analysis/`: supplementary analysis notes, upstream-feedback records, patch analysis, and historical attribution material. These files provide context for follow-up discussion; the formal evidence remains in the workload directories.
+- `analysis/`: curated technical notes, patch analysis, and short historical summaries. Private upstream-submission workflow notes are kept outside this public evidence bundle; the formal evidence remains in the workload directories.
 
 This is not a broad benchmark suite. Each claim is limited to the workload and environment described below.
 
