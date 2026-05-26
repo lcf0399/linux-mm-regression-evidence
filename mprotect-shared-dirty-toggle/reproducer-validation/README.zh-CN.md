@@ -11,7 +11,7 @@ reproducer 在 lab QEMU 环境里仍然保持同样的 timing 方向。
 - host label: `lcf`
 - QEMU: direct boot
 - kernels: `v6.12.77`、`v6.19.9`、`akpm/mm mm-unstable 444fc9435e57`
-- guest CPUs: `QEMU_SMP=1/2/4`
+- requested guest CPUs: `QEMU_SMP=1/2/4`
 - guest memory: `14336 MiB`
 - repetitions: `5`
 - order: interleaved
@@ -19,12 +19,17 @@ reproducer 在 lab QEMU 环境里仍然保持同样的 timing 方向。
 - extra guest cmdline: `tsc=unstable clocksource=refined-jiffies`
 - workload external rounds: `5`
 
+事后检查 kernel config 发现这几棵 kernel build 是 non-SMP：
+`# CONFIG_SMP is not set` 且 `CONFIG_NR_CPUS=1`。因此下面这张表不是多 CPU
+scaling 证据，只能视为在不同 requested QEMU SMP 值下的 single-CPU reproducer
+screening。
+
 主要指标是 `iteration_ns_per_page`，越低越好。它表示一次完整
 protect/restore/post-touch iteration 的每个 base page wall-clock 纳秒数。
 
 ## iteration 结果
 
-| CPU | v6.12.77 | v6.19.9 | mm-unstable | mm-unstable vs v6.19 | v6.12 -> v6.19 gap closed |
+| Requested QEMU_SMP | v6.12.77 | v6.19.9 | mm-unstable | mm-unstable vs v6.19 | v6.12 -> v6.19 gap closed |
 | ---: | ---: | ---: | ---: | ---: | ---: |
 | 1 | 301.6 | 563.2 | 477.6 | 15.2% faster | 32.7% |
 | 2 | 306.2 | 542.4 | 488.4 | 10.0% faster | 22.9% |
@@ -40,7 +45,7 @@ standalone reproducer 保持了和前面 framework run 一致的大方向：`v6.
 
 ## caveat
 
-这是针对更小 reproducer 的 5 次重复 screening run，不替代前面的 formal evidence。
+这是针对更小 reproducer 的 5 次重复 single-CPU screening run，不替代前面的 formal evidence。
 QEMU guest run 报告 `expected_match_ratio=100`、`unexpected_results=0`，但这个
 minimal guest 环境没有提供和单独 state audit 一样的 smaps state-shape 可见性。
 state-shape 结论仍以 `../state-audit-lab/` 为准。
