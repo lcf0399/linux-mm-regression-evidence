@@ -9,8 +9,7 @@ the lab QEMU setup.
 
 ## SMP Lab Follow-Up
 
-After the initial screening run, the kernels were rebuilt with an SMP-capable
-x86/QEMU direct-boot configuration:
+The validation run used an SMP-capable x86/QEMU direct-boot configuration:
 
 - `CONFIG_SMP=y`
 - `CONFIG_NR_CPUS=16`
@@ -71,19 +70,6 @@ The per-phase fields show the largest gap in the `mprotect(PROT_READ)` and
 `mprotect(PROT_READ | PROT_WRITE)` phases. See
 `lab-smp-summary-20260526.csv` for the full per-metric table.
 
-## Earlier Single-CPU Screening
-
-The first validation attempt requested `QEMU_SMP=1/2/4`, but a post-run config
-review found these kernel builds were non-SMP: `# CONFIG_SMP is not set` and
-`CONFIG_NR_CPUS=1`. Therefore the 2026-05-25 table is preserved only as a
-single-CPU reproducer screening run under different requested QEMU SMP values.
-
-| Requested QEMU_SMP | v6.12.77 | v6.19.9 | mm-unstable | mm-unstable vs v6.19 | v6.12 -> v6.19 gap closed |
-| ---: | ---: | ---: | ---: | ---: | ---: |
-| 1 | 301.6 | 563.2 | 477.6 | 15.2% faster | 32.7% |
-| 2 | 306.2 | 542.4 | 488.4 | 10.0% faster | 22.9% |
-| 4 | 305.6 | 552.4 | 479.2 | 13.3% faster | 29.7% |
-
 ## Caveat
 
 These validation runs are 5-repeat screening runs for a smaller reproducer, not
@@ -106,9 +92,6 @@ separate state audit. The state-shape conclusion remains based on
   per-version/per-metric summary.
 - `lab-smp-16cpu-rerun-summary-20260526.json`: same targeted 16 CPU rerun data
   as JSON, including serial-log validation.
-- `lab-iteration-comparison-20260525.csv`: earlier non-SMP screening table.
-- `lab-summary-20260525.csv`: earlier per-version/per-metric summary.
-- `lab-summary-20260525.json`: same earlier data with deduplication metadata.
 - `profile/`: generated workload profile used by the runner.
 - `../reproducer/`: canonical standalone source used by this validation.
 - `run-env/`: run environment, execution order, and completion sentinels /

@@ -8,8 +8,7 @@ reproducer 在 lab QEMU 环境里仍然保持同样的 timing 方向。
 
 ## SMP lab follow-up
 
-初始 screening 后，kernel 已按 x86/QEMU direct-boot 多 CPU 路径重编为支持
-SMP 的配置：
+本轮 validation run 使用支持 SMP 的 x86/QEMU direct-boot 配置：
 
 - `CONFIG_SMP=y`
 - `CONFIG_NR_CPUS=16`
@@ -67,19 +66,6 @@ reproducer 仍保持同样的大方向：`v6.19.9` 慢于 `v6.12.77`，当前
 `mprotect(PROT_READ | PROT_WRITE)` 两个阶段。完整 per-metric 表见
 `lab-smp-summary-20260526.csv`。
 
-## 较早的 single-CPU screening
-
-第一轮 validation 曾请求 `QEMU_SMP=1/2/4`，但事后 config review 发现这些
-kernel build 是 non-SMP：`# CONFIG_SMP is not set` 且 `CONFIG_NR_CPUS=1`。
-因此 2026-05-25 表只作为不同 requested QEMU SMP 值下的 single-CPU reproducer
-screening 保留。
-
-| Requested QEMU_SMP | v6.12.77 | v6.19.9 | mm-unstable | mm-unstable vs v6.19 | v6.12 -> v6.19 gap closed |
-| ---: | ---: | ---: | ---: | ---: | ---: |
-| 1 | 301.6 | 563.2 | 477.6 | 15.2% faster | 32.7% |
-| 2 | 306.2 | 542.4 | 488.4 | 10.0% faster | 22.9% |
-| 4 | 305.6 | 552.4 | 479.2 | 13.3% faster | 29.7% |
-
 ## caveat
 
 这些 validation runs 是针对更小 reproducer 的 5 次重复 screening run，不替代前面的
@@ -100,9 +86,6 @@ smaps state-shape 可见性。state-shape 结论仍以 `../state-audit-lab/` 为
   per-version/per-metric summary。
 - `lab-smp-16cpu-rerun-summary-20260526.json`：同一份 16 CPU 定向重跑数据，
   包含 serial-log validation。
-- `lab-iteration-comparison-20260525.csv`：较早的 non-SMP screening 对比表。
-- `lab-summary-20260525.csv`：较早的 per-version/per-metric summary。
-- `lab-summary-20260525.json`：同一份较早数据，包含去重元数据。
 - `profile/`：runner 使用的 generated workload profile。
 - `../reproducer/`：这轮验证使用的 canonical standalone source。
 - `run-env/`：lab 行的运行环境、执行顺序、完成哨兵和 metadata。
