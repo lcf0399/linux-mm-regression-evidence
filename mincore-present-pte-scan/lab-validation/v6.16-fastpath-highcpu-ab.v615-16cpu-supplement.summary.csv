@@ -1,0 +1,2 @@
+cpu,qemu_mem_mib,kernel,scenario,n,all_semantic_ok,mincore_ns_per_1k_pages_mean,mincore_ns_per_1k_pages_median,mincore_ns_per_1k_pages_min,mincore_ns_per_1k_pages_max,mincore_ns_per_1k_pages_cv,mincore_ns_avg_mean,mincore_ns_avg_median,mincore_ns_avg_min,mincore_ns_avg_max,mincore_ns_avg_cv,mincore_calls_mean,mincore_calls_median,mincore_calls_min,mincore_calls_max,mincore_calls_cv
+16,32768,v6.15-mainline-preempt-advice,no_thp_pte_scan_64m,9,True,14674.111,14381.0,12936.0,18671.0,0.1259,240426.0,235632.0,211952.0,305907.0,0.1259,5055.111,5093.0,3923.0,5662.0,0.1134

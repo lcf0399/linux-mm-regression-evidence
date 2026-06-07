@@ -29,6 +29,22 @@ CPU  v6.15      v6.16      v6.16 fastpath  v6.16 nobatch
 4    14942.000  18338.222  14397.889       14719.667
 ```
 
+v6.16 引入窗口 high-CPU follow-up：
+
+```text
+source: v6.16-fastpath-highcpu-ab.summary.csv
+source: v6.16-fastpath-highcpu-ab.v615-16cpu-supplement.summary.csv
+source: v6.16-fastpath-highcpu-ab.interpreted.csv
+
+CPU/mem     v6.15      v6.16      v6.16 fastpath  v6.16 nobatch
+8/16 GiB    15046.444  17540.222  13696.333       13200.000
+16/32 GiB   14674.111  18928.889  13949.000       15351.111
+```
+
+high-CPU matrix 72/72 完成，all_cpu_match=true，any_noapic=false，
+all_autorun_exit0=true，all_semantic_ok=true。主矩阵中 v6.15 16CPU 有一个明显 timing
+outlier，因此 16/32 GiB 的 v6.15 数字使用单独 v6.15-only 9-repeat supplement。
+
 v6.18 present-first confirmation：
 
 ```text

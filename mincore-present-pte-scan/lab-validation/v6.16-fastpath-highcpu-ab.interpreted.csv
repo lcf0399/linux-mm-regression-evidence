@@ -1,0 +1,3 @@
+cpu_mem,v6.15,v6.16,v6.16 batch<=1 fastpath,v6.16 nobatch,v6.16_vs_v6.15_pct,fastpath_vs_v6.16_improvement_pct,nobatch_vs_v6.16_improvement_pct,note
+8CPU/16GiB,15046.444,17540.222,13696.333,13200.000,16.57,21.91,24.74,
+16CPU/32GiB,14674.111,18928.889,13949.000,15351.111,29.00,26.31,18.90,v6.15 value from supplement

@@ -41,8 +41,8 @@ patch is `444fc9435e571`.
 - `patches/mincore-present-first-fastpath-rfc.patch`: local test patch shape,
   not ready for direct upstream submission.
 - `lab-validation/`: compact CSV summaries, the primary 1/2/4 CPU validation
-  note, high-CPU present-first A/B rows, and separate matched-PREEMPT
-  release-level 8CPU/16CPU bridge rows.
+  note, high-CPU v6.16 introduction-window A/B rows, high-CPU present-first
+  A/B rows, and separate matched-PREEMPT release-level 8CPU/16CPU bridge rows.
 
 ## Caveats
 

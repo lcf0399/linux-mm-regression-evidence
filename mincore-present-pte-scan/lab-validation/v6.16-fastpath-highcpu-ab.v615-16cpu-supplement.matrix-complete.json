@@ -1,0 +1,11 @@
+{
+  "completed_at_utc": "2026-06-07T12:29:57.633082+00:00",
+  "total_runs": 9,
+  "successful_runs": 9,
+  "failed_runs": 0,
+  "all_cpu_match": true,
+  "any_noapic": false,
+  "all_autorun_exit0": true,
+  "all_thp_always_cmdline": true,
+  "all_semantic_ok": true
+}

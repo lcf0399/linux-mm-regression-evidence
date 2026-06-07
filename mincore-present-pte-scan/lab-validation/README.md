@@ -30,6 +30,23 @@ CPU  v6.15      v6.16      v6.16 fastpath  v6.16 nobatch
 4    14942.000  18338.222  14397.889       14719.667
 ```
 
+v6.16 introduction-window high-CPU follow-up:
+
+```text
+source: v6.16-fastpath-highcpu-ab.summary.csv
+source: v6.16-fastpath-highcpu-ab.v615-16cpu-supplement.summary.csv
+source: v6.16-fastpath-highcpu-ab.interpreted.csv
+
+CPU/mem     v6.15      v6.16      v6.16 fastpath  v6.16 nobatch
+8/16 GiB    15046.444  17540.222  13696.333       13200.000
+16/32 GiB   14674.111  18928.889  13949.000       15351.111
+```
+
+The high-CPU matrix completed 72/72 with all_cpu_match=true,
+any_noapic=false, all_autorun_exit0=true, and all_semantic_ok=true.  One v6.15
+16CPU timing sample in the main matrix was an obvious outlier, so the 16/32 GiB
+v6.15 value uses a clean v6.15-only 9-repeat supplement.
+
 v6.18 present-first confirmation:
 
 ```text

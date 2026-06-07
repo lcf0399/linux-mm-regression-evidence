@@ -1,0 +1,9 @@
+cpu,qemu_mem_mib,kernel,scenario,n,all_semantic_ok,mincore_ns_per_1k_pages_mean,mincore_ns_per_1k_pages_median,mincore_ns_per_1k_pages_min,mincore_ns_per_1k_pages_max,mincore_ns_per_1k_pages_cv,mincore_ns_avg_mean,mincore_ns_avg_median,mincore_ns_avg_min,mincore_ns_avg_max,mincore_ns_avg_cv,mincore_calls_mean,mincore_calls_median,mincore_calls_min,mincore_calls_max,mincore_calls_cv
+8,16384,v6.15-mainline-preempt-advice,no_thp_pte_scan_64m,9,True,15046.444,14791.0,12683.0,18334.0,0.1386,246528.333,242341.0,207805.0,300394.0,0.1386,4948.889,4952.0,3995.0,5775.0,0.1336
+8,16384,v6.16-mainline-fastpath-preempt-advice,no_thp_pte_scan_64m,9,True,13696.333,13786.0,12938.0,14960.0,0.0506,224409.556,225875.0,211989.0,245113.0,0.0506,5359.667,5313.0,4896.0,5661.0,0.0497
+8,16384,v6.16-mainline-nobatch-preempt-advice,no_thp_pte_scan_64m,9,True,13200.0,12947.0,12743.0,13983.0,0.0376,216276.333,212139.0,208781.0,229109.0,0.0376,5555.667,5657.0,5238.0,5748.0,0.037
+8,16384,v6.16-mainline-preempt-advice,no_thp_pte_scan_64m,9,True,17540.222,17186.0,16255.0,20442.0,0.0793,287384.333,281575.0,266328.0,334935.0,0.0793,4197.778,4262.0,3583.0,4506.0,0.0743
+16,32768,v6.15-mainline-preempt-advice,no_thp_pte_scan_64m,9,True,2495624.667,15826.0,12591.0,22340263.0,2.9819,40888325.333,259307.0,206304.0,366022875.0,2.9819,4376.778,4628.0,4.0,5817.0,0.3938
+16,32768,v6.16-mainline-fastpath-preempt-advice,no_thp_pte_scan_64m,9,True,13949.0,13675.0,13058.0,16665.0,0.0826,228548.889,224061.0,213955.0,273054.0,0.0826,5279.333,5356.0,4395.0,5609.0,0.0736
+16,32768,v6.16-mainline-nobatch-preempt-advice,no_thp_pte_scan_64m,9,True,15351.111,14746.0,12807.0,18878.0,0.1471,251521.111,241609.0,209840.0,309297.0,0.147,4861.333,4967.0,3880.0,5719.0,0.1424
+16,32768,v6.16-mainline-preempt-advice,no_thp_pte_scan_64m,9,True,18928.889,17637.0,16497.0,25539.0,0.1677,310135.333,288965.0,270287.0,418436.0,0.1677,3952.0,4153.0,2868.0,4440.0,0.1407
