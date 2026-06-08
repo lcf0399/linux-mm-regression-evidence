@@ -31,9 +31,9 @@ CPU  v6.12.77   v6.18.19   v6.19.9    v7.0.9
 4    13798.222  16739.333  18892.111  17068.222
 ```
 
-This bridge shows cumulative cost relative to v6.12, but not a clean new
-v7.0.9-vs-v6.19.9 regression.  It is used as narrowing context before the
-v6.16 introduction-window A/B below.
+This bridge shows cumulative cost relative to v6.12 in the primary 1/2/4 CPU
+matrix.  It is used as release-level narrowing context before the v6.16
+introduction-window A/B below.
 
 v6.16 introduction-window A/B:
 
@@ -104,39 +104,22 @@ It supports the present-first candidate shape on the x86 high-CPU lab path.
 It is still not a substitute for arm64/mTHP/contiguous-PTE preservation
 validation.
 
-Matched-PREEMPT 8CPU follow-up:
+Matched-PREEMPT 8CPU/16CPU release-bridge rerun:
 
 ```text
-source: matched-8cpu-preempt-bridge.summary.csv
+source: matched-8-16-preempt-bridge-rerun-20260608.summary.csv
+source: matched-8-16-preempt-bridge-rerun-20260608.failures.csv
 
-CPU/mem     v6.12.77-preempt  v6.18.19-preempt  v6.19.9-preempt  v7.0.9-preempt
-8/16 GiB          19866.111         20655.778         20867.333        20496.667
+CPU/mem     v6.12.77   v6.18.19   v6.19.9    v7.0.9
+8/16 GiB    17251.889  23335.556  21863.556  21664.778
+16/32 GiB   16697.333  21428.333  21629.778  21628.333
 ```
 
-This matched 8CPU row is neutral for high-CPU old-faster evidence: v7.0.9 is
-only about 3.2% slower than v6.12.77 by mean, below the 5% threshold, and is not
-slower than v6.18.19/v6.19.9.  The original 36-run matrix had one v6.12.77 QEMU
-returncode 139; the summary uses the 35 successful original samples plus one
-successful v6.12.77 supplemental sample.
-
-Matched-PREEMPT 16CPU follow-up:
-
-```text
-source: matched-16cpu-preempt-bridge.summary.csv
-source: matched-16cpu-v70-supplement.summary.csv
-source: matched-16cpu-interpreted.summary.csv
-
-CPU/mem      v6.12.77-preempt  v6.18.19-preempt  v6.19.9-preempt  v7.0.9-preempt supplement
-16/32 GiB          15011.667         17296.111         18919.556                 18160.667
-```
-
-The 16CPU matched matrix completed 36/36 with all_semantic_ok=true, but one
-v7.0.9 repeat was an obvious timing outlier (`mincore_calls=4`, v7 CV=2.978).
-The table therefore follows `matched-16cpu-interpreted.summary.csv`, which uses
-the separate v7-only 9-repeat supplement for the v7 value.  Treat this row as
-noisy extended context only: it is consistent with a cumulative v6.12 -> later
-cost, but it is not a clean v7.0.9-vs-v6.19.9 regression row and it is not part
-of the primary 1/2/4 CPU evidence.
+This 2026-06-08 rerun was done on the shared lab while the host was busy, and
+the high-CPU CV is higher than the primary 1/2/4 CPU matrix.  The 8CPU row
+completed 36/36.  The 16CPU row had two QEMU returncode-139 failures in the
+original 36-run matrix; the missing v6.12/v6.18 samples were filled by a clean
+two-run supplement.  Treat these high-CPU rows as extended context only.
 
 v6.18 all-scenario semantic smoke:
 

@@ -30,8 +30,8 @@ CPU  v6.12.77   v6.18.19   v6.19.9    v7.0.9
 4    13798.222  16739.333  18892.111  17068.222
 ```
 
-这组 bridge 显示相对 v6.12 有累计成本，但不是干净的 v7.0.9-vs-v6.19.9 新增回归。
-它作为 narrowing context，然后再进入下面的 v6.16 introduction-window A/B。
+这组 bridge 显示 primary 1/2/4 CPU matrix 中相对 v6.12 有累计成本。它作为
+release-level narrowing context，然后再进入下面的 v6.16 introduction-window A/B。
 
 v6.16 引入窗口 A/B：
 
@@ -100,37 +100,21 @@ all_autorun_exit0=true，all_thp_always_cmdline=true，all_semantic_ok=true。
 它支持 present-first candidate shape 在 x86 high-CPU lab 路径上仍然有效；但仍不能
 替代 arm64/mTHP/contiguous-PTE preservation validation。
 
-matched-PREEMPT 8CPU follow-up：
+matched-PREEMPT 8CPU/16CPU release-bridge rerun：
 
 ```text
-source: matched-8cpu-preempt-bridge.summary.csv
+source: matched-8-16-preempt-bridge-rerun-20260608.summary.csv
+source: matched-8-16-preempt-bridge-rerun-20260608.failures.csv
 
-CPU/mem     v6.12.77-preempt  v6.18.19-preempt  v6.19.9-preempt  v7.0.9-preempt
-8/16 GiB          19866.111         20655.778         20867.333        20496.667
+CPU/mem     v6.12.77   v6.18.19   v6.19.9    v7.0.9
+8/16 GiB    17251.889  23335.556  21863.556  21664.778
+16/32 GiB   16697.333  21428.333  21629.778  21628.333
 ```
 
-这条 matched 8CPU row 对 high-CPU old-faster 证据是中性的：按 mean，v7.0.9
-只比 v6.12.77 慢约 3.2%，低于 5% 门槛，并且不比 v6.18.19/v6.19.9 更慢。
-原始 36-run matrix 有一个 v6.12.77 QEMU returncode 139；summary 使用 35 个原始
-成功样本加 1 个成功的 v6.12.77 补跑样本。
-
-matched-PREEMPT 16CPU follow-up：
-
-```text
-source: matched-16cpu-preempt-bridge.summary.csv
-source: matched-16cpu-v70-supplement.summary.csv
-source: matched-16cpu-interpreted.summary.csv
-
-CPU/mem      v6.12.77-preempt  v6.18.19-preempt  v6.19.9-preempt  v7.0.9-preempt supplement
-16/32 GiB          15011.667         17296.111         18919.556                 18160.667
-```
-
-16CPU matched matrix 36/36 完成，且 all_semantic_ok=true，但其中一个 v7.0.9 repeat
-是明显 timing outlier（`mincore_calls=4`，v7 CV=2.978）。因此上表按
-`matched-16cpu-interpreted.summary.csv` 解读，使用单独 v7-only 9-repeat supplement
-作为 v7 数字。这条 row 只作为 noisy extended context：它和 v6.12 -> later 的累计成本
-一致，但不是干净的 v7.0.9-vs-v6.19.9 regression row，也不是 primary 1/2/4 CPU
-evidence。
+这轮 2026-06-08 rerun 发生在共享 lab 负载较高时，高核数行 CV 高于 primary
+1/2/4 CPU matrix。8CPU row 36/36 完成。16CPU row 的原始 36-run matrix 有两个
+QEMU returncode-139 failure；缺失的 v6.12/v6.18 样本用 clean two-run supplement
+补齐。因此这些 high-CPU rows 只作为 extended context。
 
 v6.18 全场景 semantic smoke：
 

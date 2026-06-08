@@ -1,0 +1,3 @@
+cpu_mem,kernel,repeat,returncode,cpu_match,autorun_exit0,thp_always_cmdline,note
+16CPU/32GiB,v6.18.19-preempt-advice,4,139,True,False,True,filled by clean supplement in summary
+16CPU/32GiB,v6.12.77-preempt-advice,1,139,True,False,True,filled by clean supplement in summary

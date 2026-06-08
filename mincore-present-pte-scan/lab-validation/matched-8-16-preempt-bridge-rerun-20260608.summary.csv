@@ -1,0 +1,9 @@
+cpu_mem,kernel,n,all_semantic_ok,mincore_ns_per_1k_pages_mean,mincore_ns_per_1k_pages_median,mincore_ns_per_1k_pages_cv,note
+8CPU/16GiB,v6.12.77-preempt-advice,9,True,17251.889,14893.000,0.3051,rerun on shared lab; higher CV than primary 1/2/4 matrix
+8CPU/16GiB,v6.18.19-preempt-advice,9,True,23335.556,26606.000,0.2507,rerun on shared lab; higher CV than primary 1/2/4 matrix
+8CPU/16GiB,v6.19.9-preempt-advice,9,True,21863.556,22263.000,0.1745,rerun on shared lab; higher CV than primary 1/2/4 matrix
+8CPU/16GiB,v7.0.9-preempt,9,True,21664.778,20563.000,0.2520,rerun on shared lab; higher CV than primary 1/2/4 matrix
+16CPU/32GiB,v6.12.77-preempt-advice,9,True,16697.333,15346.000,0.2236,one original QEMU returncode-139 failure filled by clean supplement
+16CPU/32GiB,v6.18.19-preempt-advice,9,True,21428.333,21286.000,0.2030,one original QEMU returncode-139 failure filled by clean supplement
+16CPU/32GiB,v6.19.9-preempt-advice,9,True,21629.778,22162.000,0.1845,rerun on shared lab; higher CV than primary 1/2/4 matrix
+16CPU/32GiB,v7.0.9-preempt,9,True,21628.333,22586.000,0.1542,rerun on shared lab; higher CV than primary 1/2/4 matrix
