@@ -10,8 +10,9 @@ The two reports are scoped by workload:
 - `madvise-pageout-thp-noswap-refault/`: `madvise(MADV_PAGEOUT)` on an anonymous THP/no-swap reclaim-failure path. The directory name preserves the wording from the original report; the current scope does not claim that the pages were actually paged out and faulted back in.
 - `mprotect-shared-dirty-toggle/`: repeated `mprotect()` toggling over a shared dirty PTE mapping.
 - `mincore-present-pte-scan/`: later `mincore()` present-PTE scan candidate
-  analysis. It is an RFC-style, source-calibrated synthetic signal and candidate
-  fix sketch, not a submitted regression report.
+  analysis. After compiler cross-checking, it is best described as a
+  GCC-13.3/QEMU-observed compiler/codegen-sensitive signal, not a generic
+  `mincore()` regression report or an upstream-ready fix.
 - `mempolicy-migrate-pages-syscall/`: later `migrate_pages()` syscall route
   candidate analysis. It is a source-calibrated NUMA2 synthetic signal covering
   the mempolicy syscall frontend plus migration core, not a `mempolicy-only`
@@ -104,12 +105,12 @@ scope.
     `v6.15 -> v6.16`, with
     `4df65651f7075 ("mm: mincore: use pte_batch_hint() to batch process large folios")`
     as the strongest suspect.
-  - A local present-first test patch improves the x86/QEMU lab
-    `no_thp_pte_scan_64m` timing by roughly 30% or more on v6.18 and v7.0, while
-    preserving the THP/no-THP semantic smoke on x86.
-  - Current scope: narrowed suspect plus candidate fix shape validated on x86
-    lab. It still needs arm64 or mTHP/large-folio preservation validation before
-    it should be treated as an upstream-ready fix.
+  - GCC 13.3 generates a different `mincore_pte_range()` shape for v6.16
+    original, while the local fastpath and nobatch variants match each other.
+    Clang 18.1.3 generates byte-identical output for all checked variants.
+  - Current scope: compiler/codegen-sensitive signal observed with GCC-built
+    kernels in the x86/QEMU lab. The local present-first test patch is retained
+    as historical discussion material, not as an upstream-ready fix.
 
 - `mempolicy-migrate-pages-syscall/`
   - Later candidate analysis, not part of the original two reports.
@@ -167,9 +168,10 @@ reliability caveats. The later 8/16 CPU rows are extended follow-up context, not
 part of the strict same-memory primary formal matrix.
 
 The `mincore()` material is not a formal regression report. It is scoped to a
-source-calibrated anonymous no-THP resident-PTE scan and a local present-first
-candidate fix shape. The current evidence is x86/QEMU lab only and does not yet
-prove arm64/mTHP preservation.
+source-calibrated anonymous no-THP resident-PTE scan. The current public claim
+is compiler/codegen-sensitive: GCC 13.3 shows a generated-code layout
+difference in the checked x86 path, while Clang 18.1.3 does not. The timing
+evidence is x86/QEMU lab only, with no physical CPU timing yet.
 
 The `mempolicy/migrate` material is not a generic `mempolicy` regression report.
 It is scoped to a controlled NUMA2 anonymous-page migration route through

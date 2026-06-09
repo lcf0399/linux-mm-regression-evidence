@@ -7,9 +7,10 @@
 
 - `madvise-pageout-thp-noswap-refault/`：匿名 THP、guest 无 swap、`MADV_PAGEOUT` 触发的 no-swap reclaim-failure path。目录名保留了原邮件里的 `refault` 说法；当前证据范围不声称页面真的被 page out 后 refault。
 - `mprotect-shared-dirty-toggle/`：shared dirty PTE 映射上的重复 `mprotect()` protection toggle。
-- `mincore-present-pte-scan/`：后续 `mincore()` present-PTE scan 候选分析。它是
-  RFC 风格的、由源码路径校准的 synthetic 信号和 candidate fix 草图，不是已经发送的正式
-  regression 报告。
+- `mincore-present-pte-scan/`：后续 `mincore()` present-PTE scan 候选分析。补做
+  compiler cross-check 后，它更准确地说是 GCC 13.3 + QEMU 环境中观察到的
+  compiler/codegen-sensitive signal，不是 generic `mincore()` regression 报告，也不是
+  upstream-ready fix。
 - `mempolicy-migrate-pages-syscall/`：后续 `migrate_pages()` syscall route 候选分析。
   它是 source-calibrated NUMA2 synthetic 信号，覆盖 mempolicy syscall frontend 和
   migration core，不是 `mempolicy-only` regression 报告。
@@ -96,11 +97,12 @@ formal 证据的精确逐次运行元数据保留在 `pipeline_run_env.json`、`
   - release-level 和定向 A/B testing 把主台阶缩到 `v6.15 -> v6.16`，
     最强 suspect 是
     `4df65651f7075 ("mm: mincore: use pte_batch_hint() to batch process large folios")`。
-  - 本地 present-first test patch 在 v6.18 和 v7.0 的 x86/QEMU lab 上让
-    `no_thp_pte_scan_64m` 快约 30% 以上，同时 x86 上的 THP/no-THP semantic smoke
-    仍通过。
-  - 当前口径：已缩窄 suspect，并在 x86 lab 验证 candidate fix shape；但还需要
-    arm64 或 mTHP/large-folio 保真验证，才能作为 upstream-ready fix 讨论。
+  - GCC 13.3 会为 v6.16 original 生成不同的 `mincore_pte_range()` 形状，而本地
+    fastpath 和 nobatch variants 形状相同。Clang 18.1.3 会把所有被检查 variants
+    生成成逐字节等价的输出。
+  - 当前口径：这是 GCC-built kernels 在 x86/QEMU lab 中观察到的
+    compiler/codegen-sensitive signal。本地 present-first test patch 只作为历史讨论材料保留，
+    不是 upstream-ready fix。
 
 - `mempolicy-migrate-pages-syscall/`
   - 这是后续候选分析，不属于最初两个正式报告。
@@ -150,8 +152,9 @@ check 显示两者在 `v6.18.19` 已进入慢区间。后续 `mincore` 候选针
 primary formal matrix。
 
 `mincore()` 材料不是正式 regression 报告。它只限定在由源码路径校准的 anonymous no-THP
-resident-PTE scan 和本地 present-first candidate fix shape。当前证据只覆盖 x86/QEMU
-lab，还没有证明 arm64/mTHP 保真。
+resident-PTE scan。当前公开 claim 是 compiler/codegen-sensitive：GCC 13.3 在被检查的
+x86 path 上显示 generated-code layout 差异，而 Clang 18.1.3 没有。timing 证据只来自
+x86/QEMU lab，目前还没有 physical CPU timing。
 
 `mempolicy/migrate` 材料不是 generic `mempolicy` regression 报告。它只限定在受控 NUMA2
 anonymous-page `migrate_pages()` route。当前 route 证据很强，但归因仍停在
