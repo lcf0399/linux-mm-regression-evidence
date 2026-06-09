@@ -1,8 +1,7 @@
 # Linux MM 性能回归证据包 - 2026 年 5 月
 
-这个仓库包含一份整理后的证据包，用于支撑两个 Linux MM 性能回归报告，以及一个后续
-candidate-fix 分析。仓库记录正式实验方法、实验环境、摘要数据和当前归因状态，方便审阅者
-直接核查报告中的结果。
+这个仓库包含整理后的证据包，用于支撑 Linux MM 性能回归报告和后续 candidate 分析。
+仓库记录正式实验方法、实验环境、摘要数据和当前归因状态，方便审阅者直接核查报告中的结果。
 
 这两个报告按 workload 明确收窄：
 
@@ -11,6 +10,9 @@ candidate-fix 分析。仓库记录正式实验方法、实验环境、摘要数
 - `mincore-present-pte-scan/`：后续 `mincore()` present-PTE scan 候选分析。它是
   RFC 风格的、由源码路径校准的 synthetic 信号和 candidate fix 草图，不是已经发送的正式
   regression 报告。
+- `mempolicy-migrate-pages-syscall/`：后续 `migrate_pages()` syscall route 候选分析。
+  它是 source-calibrated NUMA2 synthetic 信号，覆盖 mempolicy syscall frontend 和
+  migration core，不是 `mempolicy-only` regression 报告。
 - `analysis/`：整理后的技术补充、patch 分析和短版历史摘要。私有上游提交流程复盘不放入这个公开 evidence bundle；正式证据仍以各 workload 目录为准。
 
 这不是一个广泛 benchmark suite。每个结论都只限定在下面描述的 workload 和实验环境内。
@@ -100,6 +102,21 @@ formal 证据的精确逐次运行元数据保留在 `pipeline_run_env.json`、`
   - 当前口径：已缩窄 suspect，并在 x86 lab 验证 candidate fix shape；但还需要
     arm64 或 mTHP/large-folio 保真验证，才能作为 upstream-ready fix 讨论。
 
+- `mempolicy-migrate-pages-syscall/`
+  - 这是后续候选分析，不属于最初两个正式报告。
+  - source-calibrated workload 目标是双 NUMA node guest 上用户态可见的
+    `migrate_pages()` syscall route。
+  - lab same-PREEMPT 1/2/4 CPU clean timing 中，`v7.0.9-preempt` 的
+    `move_ns_per_page` 显著慢于 `v6.12.77-preempt`、`v6.18.19-preempt` 和
+    `v6.19.9-preempt`。
+  - 8/16 CPU extended follow-up 对 v6.18/v6.19 方向仍支持，但因为 guest memory 随
+    CPU 数变化，需要和主 formal matrix 分开解释。
+  - direct coverage 确认 workload 同时进入 `mm/mempolicy.c` 和 `mm/migrate.c`；
+    ftrace 把额外成本指向 migration core；deferred-split bookkeeping 和 simple
+    `folio_mc_copy()` -> `folio_copy()` A/B 都是 negative attribution result。
+  - 当前口径：强 synthetic regression candidate，但作为最终报告前仍需要更低扰动的
+    migration-core attribution 或 commit-level narrowing。
+
 最初两个报告都还没有完整 `git bisect` 到具体 culprit commit。单独的 release-level sanity
 check 显示两者在 `v6.18.19` 已进入慢区间。后续 `mincore` 候选针对 v6.16 suspect
 已有定向 A/B 证据，但仍不是完整 `git bisect` 结果。
@@ -135,3 +152,7 @@ primary formal matrix。
 `mincore()` 材料不是正式 regression 报告。它只限定在由源码路径校准的 anonymous no-THP
 resident-PTE scan 和本地 present-first candidate fix shape。当前证据只覆盖 x86/QEMU
 lab，还没有证明 arm64/mTHP 保真。
+
+`mempolicy/migrate` 材料不是 generic `mempolicy` regression 报告。它只限定在受控 NUMA2
+anonymous-page `migrate_pages()` route。当前 route 证据很强，但归因仍停在
+migration-core cost center 和 negative A/B lead，还没有 commit-level culprit。

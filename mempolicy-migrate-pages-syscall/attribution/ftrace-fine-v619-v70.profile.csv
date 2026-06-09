@@ -1,0 +1,20 @@
+function,v619_hits,v619_total_us,v619_avg_us,v70_hits,v70_total_us,v70_avg_us,delta_total_vs_v619,note
+__x64_sys_migrate_pages,3,1604070.0,534690.2,3,1428380.0,476126.6,-0.1095,attribution-only; direction not clean timing
+do_migrate_pages,3,1603727.0,534575.6,3,1428026.0,476008.9,-0.1096,attribution-only; direction not clean timing
+migrate_pages,3,1554756.0,518252.1,3,1377340.0,459113.3,-0.1141,attribution-only; direction not clean timing
+migrate_pages_batch,25,1553621.0,62144.87,25,1376139.0,55045.56,-0.1142,attribution-only; direction not clean timing
+move_to_new_folio,12480,911565.9,73.042,12480,724565.2,58.058,-0.2051,copy-heavy call range
+folio_mc_copy,12480,764350.0,61.245,12480,580967.8,46.551,-0.2399,copy path dominates profiled time
+copy_mc_to_kernel,12492,732398.9,58.629,12492,547995.3,43.867,-0.2518,copy path dominates profiled time
+rmap_walk,24960,460267.8,18.44,24960,462215.2,18.518,0.0042,rmap walk roughly neutral under ftrace
+rmap_walk_anon,24626,384112.4,15.597,24626,385716.5,15.662,0.0042,rmap walk roughly neutral under ftrace
+try_to_migrate,12480,275627.8,22.085,12480,275495.1,22.074,-0.0005,roughly neutral under ftrace
+try_to_migrate_one,12481,164023.2,13.141,12481,161116.4,12.908,-0.0177,roughly neutral under ftrace
+remove_migration_pte,12481,144978.7,11.615,12481,146864.3,11.767,0.0130,small profiled increase
+page_vma_mapped_walk,49924,102941.5,2.061,49924,105914.4,2.121,0.0289,small profiled increase
+folio_remove_rmap_ptes,25154,57166.43,2.272,25154,60964.01,2.423,0.0664,small profiled increase
+queue_pages_range,6,48337.02,8056.17,6,50188.61,8364.769,0.0383,queueing not dominant
+queue_folios_pte_range,54,46612.81,863.2,51,48476.12,950.512,0.0400,queueing not dominant
+migrate_folio_add,12481,31883.25,2.554,12481,34534.63,2.766,0.0832,small helper increase
+__folio_migrate_mapping,12480,23428.49,1.877,12480,24831.58,1.989,0.0599,small helper increase
+mem_cgroup_migrate,12480,22371.14,1.792,12480,23540.27,1.886,0.0523,small helper increase

@@ -1,0 +1,25 @@
+diff --git a/mm/migrate.c b/mm/migrate.c
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -730,9 +730,7 @@ int migrate_huge_page_move_mapping(struct address_space *mapping,
+ 	if (folio_ref_count(src) != expected_count)
+ 		return -EAGAIN;
+ 
+-	rc = folio_mc_copy(dst, src);
+-	if (unlikely(rc))
+-		return rc;
++	folio_copy(dst, src);
+ 
+ 	xas_lock_irq(&xas);
+ 	if (!folio_ref_freeze(src, expected_count)) {
+@@ -862,9 +860,7 @@ static int __migrate_folio(struct address_space *mapping, struct folio *dst,
+ 	if (folio_ref_count(src) != expected_count)
+ 		return -EAGAIN;
+ 
+-	rc = folio_mc_copy(dst, src);
+-	if (unlikely(rc))
+-		return rc;
++	folio_copy(dst, src);
+ 
+ 	rc = __folio_migrate_mapping(mapping, dst, src, expected_count);
+ 	if (rc)

@@ -1,0 +1,102 @@
+diff --git b/include/linux/rmap.h a/include/linux/rmap.h
+index 8dc0871e5f00..dd764951b03d 100644
+--- b/include/linux/rmap.h
++++ a/include/linux/rmap.h
+@@ -92,7 +92,6 @@ struct anon_vma_chain {
+ };
+ 
+ enum ttu_flags {
+-	TTU_USE_SHARED_ZEROPAGE	= 0x2,	/* for unused pages of large folios */
+ 	TTU_SPLIT_HUGE_PMD	= 0x4,	/* split huge PMD if any */
+ 	TTU_IGNORE_MLOCK	= 0x8,	/* ignore mlock */
+ 	TTU_SYNC		= 0x10,	/* avoid racy checks with PVMW_SYNC */
+@@ -934,8 +933,12 @@ int mapping_wrprotect_range(struct address_space *mapping, pgoff_t pgoff,
+ int pfn_mkclean_range(unsigned long pfn, unsigned long nr_pages, pgoff_t pgoff,
+ 		      struct vm_area_struct *vma);
+ 
+-void remove_migration_ptes(struct folio *src, struct folio *dst,
+-		enum ttu_flags flags);
++enum rmp_flags {
++	RMP_LOCKED		= 1 << 0,
++	RMP_USE_SHARED_ZEROPAGE	= 1 << 1,
++};
++
++void remove_migration_ptes(struct folio *src, struct folio *dst, int flags);
+ 
+ /*
+  * rmap_walk_control: To control rmap traversing for specific needs
+diff --git b/mm/huge_memory.c a/mm/huge_memory.c
+index 44ff8a648afd..40cf59301c21 100644
+--- b/mm/huge_memory.c
++++ a/mm/huge_memory.c
+@@ -3431,7 +3431,7 @@ static void remap_page(struct folio *folio, unsigned long nr, int flags)
+ 	if (!folio_test_anon(folio))
+ 		return;
+ 	for (;;) {
+-		remove_migration_ptes(folio, folio, TTU_RMAP_LOCKED | flags);
++		remove_migration_ptes(folio, folio, RMP_LOCKED | flags);
+ 		i += folio_nr_pages(folio);
+ 		if (i >= nr)
+ 			break;
+@@ -3944,7 +3944,7 @@ static int __folio_split(struct folio *folio, unsigned int new_order,
+ 	int old_order = folio_order(folio);
+ 	struct folio *new_folio, *next;
+ 	int nr_shmem_dropped = 0;
+-	enum ttu_flags ttu_flags = 0;
++	int remap_flags = 0;
+ 	int ret;
+ 	pgoff_t end = 0;
+ 
+@@ -4064,9 +4064,9 @@ fail:
+ 		shmem_uncharge(mapping->host, nr_shmem_dropped);
+ 
+ 	if (!ret && is_anon && !folio_is_device_private(folio))
+-		ttu_flags = TTU_USE_SHARED_ZEROPAGE;
++		remap_flags = RMP_USE_SHARED_ZEROPAGE;
+ 
+-	remap_page(folio, 1 << old_order, ttu_flags);
++	remap_page(folio, 1 << old_order, remap_flags);
+ 
+ 	/*
+ 	 * Unlock all after-split folios except the one containing
+diff --git b/mm/migrate.c a/mm/migrate.c
+index 4750a2ba15fe..4688b9e38cd2 100644
+--- b/mm/migrate.c
++++ a/mm/migrate.c
+@@ -452,12 +452,11 @@ static bool remove_migration_pte(struct folio *folio,
+  * Get rid of all migration entries and replace them by
+  * references to the indicated page.
+  */
+-void remove_migration_ptes(struct folio *src, struct folio *dst,
+-		enum ttu_flags flags)
++void remove_migration_ptes(struct folio *src, struct folio *dst, int flags)
+ {
+ 	struct rmap_walk_arg rmap_walk_arg = {
+ 		.folio = src,
+-		.map_unused_to_zeropage = flags & TTU_USE_SHARED_ZEROPAGE,
++		.map_unused_to_zeropage = flags & RMP_USE_SHARED_ZEROPAGE,
+ 	};
+ 
+ 	struct rmap_walk_control rwc = {
+@@ -465,9 +464,9 @@ void remove_migration_ptes(struct folio *src, struct folio *dst,
+ 		.arg = &rmap_walk_arg,
+ 	};
+ 
+-	VM_BUG_ON_FOLIO((flags & TTU_USE_SHARED_ZEROPAGE) && (src != dst), src);
++	VM_BUG_ON_FOLIO((flags & RMP_USE_SHARED_ZEROPAGE) && (src != dst), src);
+ 
+-	if (flags & TTU_RMAP_LOCKED)
++	if (flags & RMP_LOCKED)
+ 		rmap_walk_locked(dst, &rwc);
+ 	else
+ 		rmap_walk(dst, &rwc);
+@@ -1522,7 +1521,8 @@ static int unmap_and_move_huge_page(new_folio_t get_new_folio,
+ 		rc = move_to_new_folio(dst, src, mode);
+ 
+ 	if (page_was_mapped)
+-		remove_migration_ptes(src, !rc ? dst : src, ttu);
++		remove_migration_ptes(src, !rc ? dst : src,
++				ttu ? RMP_LOCKED : 0);
+ 
+ 	if (ttu & TTU_RMAP_LOCKED)
+ 		i_mmap_unlock_write(mapping);

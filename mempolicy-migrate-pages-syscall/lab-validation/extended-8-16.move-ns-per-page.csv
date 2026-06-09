@@ -1,0 +1,9 @@
+row,version_family,exact_version,scenario,metric,mean,median,cv,classification,stable,robust_stable,semantic_warning,comparison_reliable,comparison_robust_reliable,run_count,ok_runs,failed_runs
+8cpu-16g,6.12-preempt,6.12.77,migrate_pages_syscall,move_ns_per_page,13745.400000,13455.000000,0.055799,improvement,yes,yes,no,yes,yes,5,5,0
+8cpu-16g,6.18-preempt,6.18.19,migrate_pages_syscall,move_ns_per_page,12591.600000,12479.000000,0.041243,improvement,yes,yes,no,yes,yes,5,5,0
+8cpu-16g,6.19-preempt,6.19.9,migrate_pages_syscall,move_ns_per_page,13580.600000,12696.000000,0.136911,improvement,yes,yes,no,yes,yes,5,5,0
+8cpu-16g,7.0-preempt,7.0.9,migrate_pages_syscall,move_ns_per_page,19267.000000,18695.000000,0.079102,neutral,yes,yes,no,yes,yes,5,5,0
+16cpu-32g,6.12-preempt,6.12.77,migrate_pages_syscall,move_ns_per_page,37816.600000,15870.000000,1.361372,regression,no,yes,no,no,yes,5,5,0
+16cpu-32g,6.18-preempt,6.18.19,migrate_pages_syscall,move_ns_per_page,13016.600000,12500.000000,0.062607,improvement,yes,yes,no,yes,yes,5,5,0
+16cpu-32g,6.19-preempt,6.19.9,migrate_pages_syscall,move_ns_per_page,13802.400000,13238.000000,0.114926,improvement,yes,yes,no,yes,yes,5,5,0
+16cpu-32g,7.0-preempt,7.0.9,migrate_pages_syscall,move_ns_per_page,19299.200000,18834.000000,0.047809,neutral,yes,yes,no,yes,yes,5,5,0

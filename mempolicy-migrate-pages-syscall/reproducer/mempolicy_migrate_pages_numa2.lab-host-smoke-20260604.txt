@@ -1,0 +1,24 @@
+Command:
+
+  gcc -O2 -Wall -Wextra -o /tmp/mempolicy_migrate_pages_numa2 \
+    mm_regression_gen_deepseekv4pro/mempolicy/reproducers/mempolicy_migrate_pages_numa2.c
+  /tmp/mempolicy_migrate_pages_numa2 16 3
+
+Environment:
+
+  host: lcf@10.26.43.21
+  /sys/devices/system/node/online: 0-1
+  nproc: 128
+
+Output:
+
+  mempolicy_migrate_pages_numa2 mapping_mib=16 rounds=3 first_node=0 second_node=1 page_size=4096
+  round=1 bytes=16777216 pages=4096 old_node=0 new_node=1 move_ns=13960816 move_ns_per_page=3408 target_pages=4096 other_pages=0 failed_pages=0
+  round=2 bytes=16777216 pages=4096 old_node=0 new_node=1 move_ns=9831674 move_ns_per_page=2400 target_pages=4096 other_pages=0 failed_pages=0
+  round=3 bytes=16777216 pages=4096 old_node=0 new_node=1 move_ns=9554037 move_ns_per_page=2332 target_pages=4096 other_pages=0 failed_pages=0
+
+Interpretation:
+
+  Standalone reproducer shape is valid on a two-node NUMA host. This smoke is
+  not a version-comparison timing result and should not be used as regression
+  evidence by itself.

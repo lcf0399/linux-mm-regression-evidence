@@ -1,9 +1,9 @@
 # Linux MM Regression Evidence - May 2026
 
-This repository contains a curated evidence bundle for two Linux MM performance
-regression reports, plus one later candidate-fix analysis. It documents the
-formal test method, environment, summary data, and current attribution state so
-that reviewers can audit the reported results directly.
+This repository contains curated evidence bundles for Linux MM performance
+regression reports and later candidate analyses. It documents the formal test
+method, environment, summary data, and current attribution state so that
+reviewers can audit the reported results directly.
 
 The two reports are scoped by workload:
 
@@ -12,6 +12,10 @@ The two reports are scoped by workload:
 - `mincore-present-pte-scan/`: later `mincore()` present-PTE scan candidate
   analysis. It is an RFC-style, source-calibrated synthetic signal and candidate
   fix sketch, not a submitted regression report.
+- `mempolicy-migrate-pages-syscall/`: later `migrate_pages()` syscall route
+  candidate analysis. It is a source-calibrated NUMA2 synthetic signal covering
+  the mempolicy syscall frontend plus migration core, not a `mempolicy-only`
+  regression report.
 - `analysis/`: curated technical notes, patch analysis, and short historical summaries. Private upstream-submission workflow notes are kept outside this public evidence bundle; the formal evidence remains in the workload directories.
 
 This is not a broad benchmark suite. Each claim is limited to the workload and environment described below.
@@ -107,6 +111,22 @@ scope.
     lab. It still needs arm64 or mTHP/large-folio preservation validation before
     it should be treated as an upstream-ready fix.
 
+- `mempolicy-migrate-pages-syscall/`
+  - Later candidate analysis, not part of the original two reports.
+  - The source-calibrated workload targets the userspace-visible
+    `migrate_pages()` syscall route on a two-node NUMA guest.
+  - Lab same-PREEMPT 1/2/4 CPU clean timing shows `v7.0.9-preempt`
+    substantially slower than `v6.12.77-preempt`, `v6.18.19-preempt`, and
+    `v6.19.9-preempt` on `move_ns_per_page`.
+  - Extended 8/16 CPU follow-up supports the same direction versus v6.18/v6.19,
+    but is reported separately because guest memory changes with CPU count.
+  - Direct coverage confirms the workload reaches both `mm/mempolicy.c` and
+    `mm/migrate.c`; ftrace points the extra cost at the migration core.
+    Deferred-split bookkeeping and simple `folio_mc_copy()` -> `folio_copy()`
+    A/B tests are both negative attribution results.
+  - Current scope: strong synthetic regression candidate needing lower-overhead
+    migration-core attribution or commit-level narrowing before a final report.
+
 No culprit commit has been fully bisected for the original two reports. Separate
 release-level sanity checks showed `v6.18.19` already in the slow range for both
 of them. The later `mincore` candidate has targeted A/B evidence against the
@@ -150,3 +170,9 @@ The `mincore()` material is not a formal regression report. It is scoped to a
 source-calibrated anonymous no-THP resident-PTE scan and a local present-first
 candidate fix shape. The current evidence is x86/QEMU lab only and does not yet
 prove arm64/mTHP preservation.
+
+The `mempolicy/migrate` material is not a generic `mempolicy` regression report.
+It is scoped to a controlled NUMA2 anonymous-page migration route through
+`migrate_pages()`. The current evidence is strong for that route, but attribution
+still stops at migration-core cost centers and negative A/B leads rather than a
+commit-level culprit.

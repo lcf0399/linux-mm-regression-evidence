@@ -1,0 +1,3 @@
+kernel,returncode,function_profile_enabled,workload_status,seen_cpu,added_function_count,missing_or_rejected_note
+v6.19.9-preempt,0,True,1,1,32,"expected static/inlined or unavailable symbols missing/rejected; both kernels had the same observable target set"
+v7.0.9-preempt,0,True,1,1,32,"expected static/inlined or unavailable symbols missing/rejected; both kernels had the same observable target set"
