@@ -10,7 +10,10 @@ Current scope:
 - Timed work: mempolicy syscall frontend plus migration core in `mm/migrate.c`.
 - Scenario: two-node NUMA guest, 16 MiB anonymous mapping initially placed on
   node 0, then migrated to node 1 with `migrate_pages()`.
-- Main metric: `move_ns_per_page`, lower is better.
+- Main metric: `move_ns_per_page`, lower is better.  It is the elapsed time
+  around the `migrate_pages()` syscall divided by 4096 pages; the later
+  `move_pages(..., nodes=NULL, status=...)` query is only a placement/state
+  check and is not included in this timing metric.
 
 This is not a production application regression report and not a generic
 `mempolicy` regression claim.  It is a strong candidate that still needs

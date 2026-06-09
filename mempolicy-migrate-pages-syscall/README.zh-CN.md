@@ -10,7 +10,9 @@
 - 计时工作：mempolicy syscall frontend 加上 `mm/migrate.c` migration core。
 - 场景：双 NUMA node guest，16 MiB anonymous mapping 先放到 node 0，然后用
   `migrate_pages()` 迁到 node 1。
-- 主指标：`move_ns_per_page`，越低越好。
+- 主指标：`move_ns_per_page`，越低越好。它表示 `migrate_pages()` syscall 本身的耗时
+  除以 4096 pages；后面的 `move_pages(..., nodes=NULL, status=...)` 只是 placement /
+  state 校验，不计入这个 timing 指标。
 
 这不是生产应用回归报告，也不是 generic `mempolicy` regression claim。它是强候选，
 但在作为正式上游 regression report 前，仍需要更多 attribution 或 commit-level
