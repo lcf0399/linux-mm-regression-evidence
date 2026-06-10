@@ -15,35 +15,36 @@ This note records that test. It is static codegen evidence only.
 
 ## Result
 
-For GCC 13.3, GCC 14.2, and GCC 15.2, the always-inline variant is
-byte-identical to the v6.16 original `mincore_pte_range()` objdump. It does not
-collapse to the local `batch <= 1` fastpath / nobatch shape.
+For GCC 13.3, GCC 14.2, and GCC 15.2, the always-inline variant has the same
+`mincore_pte_range()` size and the same normalized function objdump as v6.16
+original. It does not collapse to the local `batch <= 1` fastpath / nobatch
+shape.
 
 | compiler | v6.16 original size | v6.16 always-inline size | relation |
 | --- | ---: | ---: | --- |
-| GCC 13.3 | `0x245` | `0x245` | byte-identical to original |
-| GCC 14.2 | `0x229` | `0x229` | byte-identical to original |
-| GCC 15.2 | `0x221` | `0x221` | byte-identical to original |
+| GCC 13.3 | `0x245` | `0x245` | same normalized objdump as original |
+| GCC 14.2 | `0x229` | `0x229` | same normalized objdump as original |
+| GCC 15.2 | `0x221` | `0x221` | same normalized objdump as original |
 
-The matching objdump hashes are:
+The matching normalized `mincore_pte_range()` objdump hashes are:
 
 ```text
 GCC 13.3 original / always-inline:
-  11ba50b6f4d749692b9d0c277bd26437958543144a2c90c9cf1038fe1eaa4437
+  72e241e87b3955ac68073a4d3c9fb753f16ae03a1b50fdedf26fefc524a9919f
 
 GCC 14.2 original / always-inline:
-  99f72d073d7ad9219fee7cb1459ed4c268444d1dfd3b2c41e2edd2d8077d854d
+  c6ec9ff7d34afdeace1e36f3d94fc4627b36192cc1dd455602dd7767d05f01db
 
 GCC 15.2 original / always-inline:
-  5d80f8a89aa3e478ead7e96fa91015fc679a56835f3ec5eac168fb196eae9d9d
+  86f3574d08cb0cbd459ec77bfc27e16911f29803a3aafefa218ce9eabb41da6d
 ```
 
 ## Interpretation
 
 This suggests that the observed GCC layout difference is not simply caused by
 GCC refusing to inline the default x86 `pte_batch_hint()` helper. For these
-builds, forcing `__always_inline` leaves the v6.16 original generated code
-unchanged.
+builds, forcing `__always_inline` leaves the v6.16 original generated
+instruction listing unchanged.
 
 The remaining difference still points at the surrounding batching/`step`
 control-flow shape: the local `batch <= 1` fastpath and the nobatch variant

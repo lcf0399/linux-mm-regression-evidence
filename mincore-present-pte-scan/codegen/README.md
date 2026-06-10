@@ -203,7 +203,8 @@ GCC 13.3, GCC 14.2, and GCC 15.2.
 Pedro suggested testing whether forcing the default x86 `pte_batch_hint()` helper
 to `__always_inline` changes the generated code. It does not in this setup:
 GCC 13.3, GCC 14.2, and GCC 15.2 all produce `mincore_pte_range()` output that
-is byte-identical to v6.16 original. See `gcc-always-inline-test.md`.
+has the same normalized function objdump as v6.16 original. See
+`gcc-always-inline-test.md`.
 
 ## Interpretation
 
