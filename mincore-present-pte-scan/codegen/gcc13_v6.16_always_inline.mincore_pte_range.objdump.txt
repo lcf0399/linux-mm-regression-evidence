@@ -1,0 +1,151 @@
+0000000000000100 <mincore_pte_range>:
+ 100:	push   %r15
+ 102:	push   %r14
+ 104:	push   %r13
+ 106:	mov    %rdx,%r13
+ 109:	push   %r12
+ 10b:	sub    %rsi,%r13
+ 10e:	mov    %rcx,%r12
+ 111:	push   %rbp
+ 112:	shr    $0xc,%r13
+ 116:	mov    %rdx,%rbp
+ 119:	push   %rbx
+ 11a:	mov    %rsi,%rbx
+ 11d:	sub    $0x18,%rsp
+ 121:	mov    (%rdi),%rax
+ 124:	mov    0x18(%rcx),%r14
+ 128:	movq   $0x0,0x10(%rsp)
+ 131:	mov    0x28(%rcx),%r15
+ 135:	mov    %r13,(%rsp)
+ 139:	test   $0xffffffffffffff9f,%rax
+ 13f:	jne    22c <mincore_pte_range+0x12c>
+ 145:	movq   $0x0,0x10(%rsp)
+ 14e:	mov    %rdi,%rsi
+ 151:	mov    0x8(%r12),%rdi
+ 156:	lea    0x10(%rsp),%rcx
+ 15b:	mov    %rbx,%rdx
+ 15e:	call   163 <mincore_pte_range+0x63>
+			15f: R_X86_64_PLT32	__pte_offset_map_lock-0x4
+ 163:	mov    %rax,%r13
+ 166:	test   %rax,%rax
+ 169:	je     31d <mincore_pte_range+0x21d>
+ 16f:	cmp    %rbx,%rbp
+ 172:	je     2e7 <mincore_pte_range+0x1e7>
+ 178:	mov    0x0(%r13),%rax
+ 17c:	mov    %rbx,%rdi
+ 17f:	add    $0x1000,%rbx
+ 186:	test   $0xffffffffffffff9f,%rax
+ 18c:	je     2c8 <mincore_pte_range+0x1c8>
+ 192:	test   $0x101,%eax
+ 197:	jne    2ed <mincore_pte_range+0x1ed>
+ 19d:	test   $0x8,%al
+ 19f:	jne    29d <mincore_pte_range+0x19d>
+ 1a5:	mov    %rax,%rdx
+ 1a8:	shr    $0x3b,%rax
+ 1ac:	not    %rdx
+ 1af:	shl    $0x3a,%rax
+ 1b3:	shl    $0x5,%rdx
+ 1b7:	shr    $0xe,%rdx
+ 1bb:	or     %rax,%rdx
+ 1be:	shr    $0x3a,%rax
+ 1c2:	cmp    $0x1f,%rax
+ 1c6:	je     2c8 <mincore_pte_range+0x1c8>
+ 1cc:	cmp    $0x1b,%rax
+ 1d0:	ja     2ed <mincore_pte_range+0x1ed>
+ 1d6:	mov    %rdx,%rsi
+ 1d9:	shl    $0xe,%rdx
+ 1dd:	shr    $0x1c,%rdx
+ 1e1:	and    $0x3fff,%esi
+ 1e7:	lea    (%rdx,%rdx,4),%rcx
+ 1eb:	lea    (%rdx,%rcx,2),%rdi
+ 1ef:	shl    $0x4,%rdi
+ 1f3:	add    0x0(,%rax,8),%rdi
+			1f7: R_X86_64_32S	swapper_spaces
+ 1fb:	call   200 <mincore_pte_range+0x100>
+			1fc: R_X86_64_PLT32	filemap_get_incore_folio-0x4
+ 200:	mov    %rax,%rdi
+ 203:	cmp    $0xfffffffffffff000,%rax
+ 209:	ja     33e <mincore_pte_range+0x23e>
+ 20f:	mov    (%rax),%rax
+ 212:	shr    $0x3,%rax
+ 216:	and    $0x1,%eax
+ 219:	je     21b <mincore_pte_range+0x11b>
+ 21b:	decl   0x34(%rdi)
+ 21e:	je     32b <mincore_pte_range+0x22b>
+ 224:	mov    %al,(%r15)
+ 227:	jmp    2d6 <mincore_pte_range+0x1d6>
+ 22c:	test   $0x80,%al
+ 22e:	je     28a <mincore_pte_range+0x18a>
+ 230:	test   $0x181,%eax
+ 235:	jne    2f3 <mincore_pte_range+0x1f3>
+ 23b:	mov    %r14,%rsi
+ 23e:	mov    %rdi,0x8(%rsp)
+ 243:	call   248 <mincore_pte_range+0x148>
+			244: R_X86_64_PLT32	__pmd_trans_huge_lock-0x4
+ 248:	mov    0x8(%rsp),%rdi
+ 24d:	test   %rax,%rax
+ 250:	mov    %rax,0x10(%rsp)
+ 255:	je     14e <mincore_pte_range+0x4e>
+ 25b:	movslq (%rsp),%r13
+ 25f:	mov    $0x1,%esi
+ 264:	mov    %r15,%rdi
+ 267:	mov    %r13,%rdx
+ 26a:	call   26f <mincore_pte_range+0x16f>
+			26b: R_X86_64_PLT32	memset-0x4
+ 26f:	add    %r13,0x28(%r12)
+ 274:	call   279 <mincore_pte_range+0x179>
+			275: R_X86_64_PLT32	__cond_resched-0x4
+ 279:	add    $0x18,%rsp
+ 27d:	xor    %eax,%eax
+ 27f:	pop    %rbx
+ 280:	pop    %rbp
+ 281:	pop    %r12
+ 283:	pop    %r13
+ 285:	pop    %r14
+ 287:	pop    %r15
+ 289:	ret
+ 28a:	test   $0x181,%eax
+ 28f:	je     23b <mincore_pte_range+0x13b>
+ 291:	bt     $0x39,%rax
+ 296:	jb     23b <mincore_pte_range+0x13b>
+ 298:	jmp    145 <mincore_pte_range+0x45>
+ 29d:	and    $0xfffffffffffffff7,%rax
+ 2a1:	mov    %rax,%rdx
+ 2a4:	shr    $0x3b,%rax
+ 2a8:	not    %rdx
+ 2ab:	shl    $0x3a,%rax
+ 2af:	shl    $0x5,%rdx
+ 2b3:	shr    $0xe,%rdx
+ 2b7:	or     %rax,%rdx
+ 2ba:	shr    $0x3a,%rax
+ 2be:	cmp    $0x1f,%rax
+ 2c2:	jne    1cc <mincore_pte_range+0xcc>
+ 2c8:	mov    %r15,%rcx
+ 2cb:	mov    %r14,%rdx
+ 2ce:	mov    %rbx,%rsi
+ 2d1:	call   10 <__mincore_unmapped_range>
+ 2d6:	add    $0x1,%r15
+ 2da:	add    $0x8,%r13
+ 2de:	cmp    %rbx,%rbp
+ 2e1:	jne    178 <mincore_pte_range+0x78>
+ 2e7:	movslq (%rsp),%r13
+ 2eb:	jmp    26f <mincore_pte_range+0x16f>
+ 2ed:	movb   $0x1,(%r15)
+ 2f1:	jmp    2d6 <mincore_pte_range+0x1d6>
+ 2f3:	movabs $0x200000000000080,%rdx
+ 2fd:	and    %rax,%rdx
+ 300:	cmp    $0x80,%rdx
+ 307:	je     23b <mincore_pte_range+0x13b>
+ 30d:	bt     $0x39,%rax
+ 312:	jb     23b <mincore_pte_range+0x13b>
+ 318:	jmp    145 <mincore_pte_range+0x45>
+ 31d:	movl   $0x2,0x20(%r12)
+ 326:	jmp    279 <mincore_pte_range+0x179>
+ 32b:	mov    %al,0x8(%rsp)
+ 32f:	call   334 <mincore_pte_range+0x234>
+			330: R_X86_64_PLT32	__folio_put-0x4
+ 334:	movzbl 0x8(%rsp),%eax
+ 339:	jmp    224 <mincore_pte_range+0x124>
+ 33e:	xor    %eax,%eax
+ 340:	jmp    224 <mincore_pte_range+0x124>
+ 345:	data16 cs nopw 0x0(%rax,%rax,1)

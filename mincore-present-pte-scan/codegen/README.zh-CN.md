@@ -190,6 +190,13 @@ GCC15 v6.16 nobatch / batch<=1 fastpath:
 `gcc-pte-loop-side-by-side.md` 里另外按 GCC 13.3、GCC 14.2 和 GCC 15.2
 整理了一份短的 basic-block 对齐说明。
 
+## Pedro 的 always-inline 建议
+
+Pedro 建议测试把默认 x86 `pte_batch_hint()` helper 强制成 `__always_inline` 是否会改变
+generated code。在这个 setup 下没有改变：GCC 13.3、GCC 14.2 和 GCC 15.2 生成的
+`mincore_pte_range()` 都和 v6.16 original 逐字节相同。见
+`gcc-always-inline-test.md`。
+
 ## 解释
 
 这个 codegen 检查会收窄原始报告：

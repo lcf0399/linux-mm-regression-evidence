@@ -1,0 +1,145 @@
+0000000000000120 <mincore_pte_range>:
+ 120:	push   %r15
+ 122:	push   %r14
+ 124:	push   %r13
+ 126:	mov    %rcx,%r13
+ 129:	push   %r12
+ 12b:	mov    %rdx,%r12
+ 12e:	push   %rbp
+ 12f:	mov    %rdx,%rbp
+ 132:	push   %rbx
+ 133:	sub    %rsi,%rbp
+ 136:	mov    %rsi,%rbx
+ 139:	shr    $0xc,%rbp
+ 13d:	sub    $0x18,%rsp
+ 141:	mov    0x18(%rcx),%r14
+ 145:	mov    0x28(%rcx),%r15
+ 149:	movq   $0x0,0x10(%rsp)
+ 152:	mov    (%rdi),%rax
+ 155:	mov    %rbp,(%rsp)
+ 159:	test   $0xffffffffffffff9f,%rax
+ 15f:	jne    243 <mincore_pte_range+0x123>
+ 165:	movq   $0x0,0x10(%rsp)
+ 16e:	mov    %rdi,%rsi
+ 171:	mov    0x8(%r13),%rdi
+ 175:	lea    0x10(%rsp),%rcx
+ 17a:	mov    %rbx,%rdx
+ 17d:	call   182 <mincore_pte_range+0x62>
+			17e: R_X86_64_PLT32	__pte_offset_map_lock-0x4
+ 182:	mov    %rax,%rbp
+ 185:	test   %rax,%rax
+ 188:	je     317 <mincore_pte_range+0x1f7>
+ 18e:	cmp    %rbx,%r12
+ 191:	je     308 <mincore_pte_range+0x1e8>
+ 197:	mov    0x0(%rbp),%rax
+ 19b:	mov    %rbx,%rdi
+ 19e:	add    $0x1000,%rbx
+ 1a5:	test   $0xffffffffffffff9f,%rax
+ 1ab:	je     2e9 <mincore_pte_range+0x1c9>
+ 1b1:	test   $0x101,%eax
+ 1b6:	jne    311 <mincore_pte_range+0x1f1>
+ 1bc:	test   $0x8,%al
+ 1be:	jne    2be <mincore_pte_range+0x19e>
+ 1c4:	mov    %rax,%rdx
+ 1c7:	shr    $0x3b,%rax
+ 1cb:	not    %rdx
+ 1ce:	shl    $0x3a,%rax
+ 1d2:	shl    $0x5,%rdx
+ 1d6:	shr    $0xe,%rdx
+ 1da:	or     %rax,%rdx
+ 1dd:	shr    $0x3a,%rax
+ 1e1:	cmp    $0x1f,%rax
+ 1e5:	je     2e9 <mincore_pte_range+0x1c9>
+ 1eb:	cmp    $0x1b,%rax
+ 1ef:	ja     311 <mincore_pte_range+0x1f1>
+ 1f5:	mov    %rdx,%rsi
+ 1f8:	shl    $0xe,%rdx
+ 1fc:	shr    $0x1c,%rdx
+ 200:	and    $0x3fff,%esi
+ 206:	imul   $0xb0,%rdx,%rdi
+ 20d:	add    0x0(,%rax,8),%rdi
+			211: R_X86_64_32S	swapper_spaces
+ 215:	call   21a <mincore_pte_range+0xfa>
+			216: R_X86_64_PLT32	filemap_get_incore_folio-0x4
+ 21a:	cmp    $0xfffffffffffff000,%rax
+ 220:	ja     33a <mincore_pte_range+0x21a>
+ 226:	mov    (%rax),%rdx
+ 229:	shr    $0x3,%rdx
+ 22d:	and    $0x1,%edx
+ 230:	je     232 <mincore_pte_range+0x112>
+ 232:	decl   0x34(%rax)
+ 235:	je     324 <mincore_pte_range+0x204>
+ 23b:	mov    %dl,(%r15)
+ 23e:	jmp    2f7 <mincore_pte_range+0x1d7>
+ 243:	test   $0x80,%al
+ 245:	jne    29c <mincore_pte_range+0x17c>
+ 247:	test   $0x181,%eax
+ 24c:	jne    2b2 <mincore_pte_range+0x192>
+ 24e:	mov    %r14,%rsi
+ 251:	mov    %rdi,0x8(%rsp)
+ 256:	call   25b <mincore_pte_range+0x13b>
+			257: R_X86_64_PLT32	__pmd_trans_huge_lock-0x4
+ 25b:	mov    0x8(%rsp),%rdi
+ 260:	test   %rax,%rax
+ 263:	mov    %rax,0x10(%rsp)
+ 268:	je     16e <mincore_pte_range+0x4e>
+ 26e:	movslq (%rsp),%rbp
+ 272:	mov    $0x1,%esi
+ 277:	mov    %r15,%rdi
+ 27a:	mov    %rbp,%rdx
+ 27d:	call   282 <mincore_pte_range+0x162>
+			27e: R_X86_64_PLT32	memset-0x4
+ 282:	add    %rbp,0x28(%r13)
+ 286:	call   28b <mincore_pte_range+0x16b>
+			287: R_X86_64_PLT32	__cond_resched-0x4
+ 28b:	add    $0x18,%rsp
+ 28f:	xor    %eax,%eax
+ 291:	pop    %rbx
+ 292:	pop    %rbp
+ 293:	pop    %r12
+ 295:	pop    %r13
+ 297:	pop    %r14
+ 299:	pop    %r15
+ 29b:	ret
+ 29c:	movabs $0x200000000000080,%rdx
+ 2a6:	and    %rax,%rdx
+ 2a9:	cmp    $0x80,%rdx
+ 2b0:	je     24e <mincore_pte_range+0x12e>
+ 2b2:	bt     $0x39,%rax
+ 2b7:	jb     24e <mincore_pte_range+0x12e>
+ 2b9:	jmp    165 <mincore_pte_range+0x45>
+ 2be:	and    $0xfffffffffffffff7,%rax
+ 2c2:	mov    %rax,%rdx
+ 2c5:	shr    $0x3b,%rax
+ 2c9:	not    %rdx
+ 2cc:	shl    $0x3a,%rax
+ 2d0:	shl    $0x5,%rdx
+ 2d4:	shr    $0xe,%rdx
+ 2d8:	or     %rax,%rdx
+ 2db:	shr    $0x3a,%rax
+ 2df:	cmp    $0x1f,%rax
+ 2e3:	jne    1eb <mincore_pte_range+0xcb>
+ 2e9:	mov    %r15,%rcx
+ 2ec:	mov    %r14,%rdx
+ 2ef:	mov    %rbx,%rsi
+ 2f2:	call   10 <__mincore_unmapped_range>
+ 2f7:	add    $0x1,%r15
+ 2fb:	add    $0x8,%rbp
+ 2ff:	cmp    %rbx,%r12
+ 302:	jne    197 <mincore_pte_range+0x77>
+ 308:	movslq (%rsp),%rbp
+ 30c:	jmp    282 <mincore_pte_range+0x162>
+ 311:	movb   $0x1,(%r15)
+ 315:	jmp    2f7 <mincore_pte_range+0x1d7>
+ 317:	movl   $0x2,0x20(%r13)
+ 31f:	jmp    28b <mincore_pte_range+0x16b>
+ 324:	mov    %rax,%rdi
+ 327:	mov    %dl,0x8(%rsp)
+ 32b:	call   330 <mincore_pte_range+0x210>
+			32c: R_X86_64_PLT32	__folio_put-0x4
+ 330:	movzbl 0x8(%rsp),%edx
+ 335:	jmp    23b <mincore_pte_range+0x11b>
+ 33a:	xor    %edx,%edx
+ 33c:	jmp    23b <mincore_pte_range+0x11b>
+ 341:	data16 cs nopw 0x0(%rax,%rax,1)
+ 34c:	nopl   0x0(%rax)

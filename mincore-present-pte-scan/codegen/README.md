@@ -198,6 +198,13 @@ GCC15 v6.16 nobatch / batch<=1 fastpath:
 See `gcc-pte-loop-side-by-side.md` for the short side-by-side block note across
 GCC 13.3, GCC 14.2, and GCC 15.2.
 
+## Pedro's always-inline suggestion
+
+Pedro suggested testing whether forcing the default x86 `pte_batch_hint()` helper
+to `__always_inline` changes the generated code. It does not in this setup:
+GCC 13.3, GCC 14.2, and GCC 15.2 all produce `mincore_pte_range()` output that
+is byte-identical to v6.16 original. See `gcc-always-inline-test.md`.
+
 ## Interpretation
 
 This codegen check narrows the original report:
