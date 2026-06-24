@@ -23,6 +23,11 @@ mprotect-shared-dirty-toggle/
   - Pedro small-folio `mprotect()` optimization 与 shared-dirty
     `nr_ptes == 1` 假设之间的技术关系分析。
 
+- `mprotect_baremetal_narrowing_2026-06-23.zh-CN.md`
+  - 新 bare-metal 节点上 `mprotect_shared_dirty_reproducer` 的
+    `v6.16 -> v6.17` release-window narrowing、对应源码差异方向，以及
+    2026-06-24 single-PTE attribution probe 的结论边界。
+
 ## 边界
 
 - `madvise` 当前不应表述为已证明的真实 pageout/refault regression，也不应表述为

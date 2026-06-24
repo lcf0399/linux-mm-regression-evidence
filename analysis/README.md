@@ -25,6 +25,11 @@ mprotect-shared-dirty-toggle/
   - Technical analysis of Pedro's small-folio `mprotect()` optimization and
     how it relates to the shared-dirty `nr_ptes == 1` hypothesis.
 
+- `mprotect_baremetal_narrowing_2026-06-23.zh-CN.md`
+  - Bare-metal `v6.16 -> v6.17` release-window narrowing for the
+    `mprotect_shared_dirty_reproducer`, plus the 2026-06-24 single-PTE
+    attribution probe and its exact-revert caveat.
+
 ## Boundaries
 
 - The `madvise` current scope is not a proven real pageout/refault regression

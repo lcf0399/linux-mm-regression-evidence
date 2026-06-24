@@ -20,3 +20,9 @@ analysis/lab-launch-*.log
 mprotect-shared-dirty-toggle/reproducer-validation/raw/
 mprotect-shared-dirty-toggle/reproducer-validation/lab-raw-*/
 mprotect-shared-dirty-toggle/reproducer-validation/*.log
+
+# Bare-metal kernel-queue scratch state. Keep summaries, logs, and env files
+# public when curated, but not local queue cursors or copied test binaries.
+mprotect-shared-dirty-toggle/bare-metal/**/next_step
+mprotect-shared-dirty-toggle/bare-metal/**/steps/
+mprotect-shared-dirty-toggle/bare-metal/**/runs/bin/

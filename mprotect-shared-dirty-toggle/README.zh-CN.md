@@ -66,6 +66,16 @@ cost，而不是 workload-state mismatch comparison。
 - `mm-unstable-lab-sanity/`：small-folio optimization 讨论使用的 lab follow-up matrix。
 - `state-audit-lab/`：支持 same-state comparison assumption 的 lab state-shape audit。
 - `mm-unstable-local-sanity/`：仅作本地 follow-up context。
+- `email/`：上游邮件草稿、回复草稿和中文审阅说明。
+- `bare-metal/`：新 i7-14700 节点上的真机复跑结果。当前 standalone A/B 中，
+  `6.19.9` 相对 `6.12.77` 仍较慢；`6.19.9 + Pedro v3 patch-only` 未改善该
+  standalone 结果。后续的 base-page attribution probe 能追回一部分 `6.19.9`
+  原版成本，但没有完全回到 `6.12.77` 水平。后续 release-window narrowing 显示
+  slowdown 出现在 `v6.16 -> v6.17` 窗口；`v6.17` single-PTE attribution probe
+  能把该 standalone metric 拉回 `v6.16` 快区间，支持把主要成本聚焦到
+  `mm/mprotect.c::change_pte_range()` 的 v6.17 PTE-batching hot-path shape。
+  该 probe 不是 exact commit revert；细节见
+  `bare-metal/20260624-6.17-singlepte-probe/source-attribution-note.zh-CN.md`。
 
 follow-up 目录中的精简 `results/` 子目录保存每个 CPU/memory 行可审计的
 `summary`、`raw`、`pipeline_run_env.json` 和 `execution_order.json`。完整 runner

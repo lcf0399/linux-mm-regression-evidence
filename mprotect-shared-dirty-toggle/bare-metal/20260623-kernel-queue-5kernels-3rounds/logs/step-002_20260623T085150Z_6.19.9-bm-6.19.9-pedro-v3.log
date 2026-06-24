@@ -1,0 +1,17 @@
+run_dir=/home/ubuntu/kernel-study/out/baremetal-ab/mprotect_shared_dirty_queue/runs/20260623T085250Z_6.19.9-bm-6.19.9-pedro-v3
+exit_code=0
+scenario=shared_dirty_full_toggle_64m
+mapping_mb=64
+pages=16384
+protect_ns_per_page=15
+restore_ns_per_page=15
+post_touch_ns_per_page=8
+iteration_ns_per_page=39
+expected_match_ratio=100
+unexpected_results=0
+smaps_before_kernel_page_kb=4
+smaps_before_mmu_page_kb=4
+smaps_before_anon_huge_kb=0
+smaps_after_kernel_page_kb=4
+smaps_after_mmu_page_kb=4
+smaps_after_anon_huge_kb=0
