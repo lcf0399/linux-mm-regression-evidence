@@ -66,7 +66,6 @@ cost，而不是 workload-state mismatch comparison。
 - `mm-unstable-lab-sanity/`：small-folio optimization 讨论使用的 lab follow-up matrix。
 - `state-audit-lab/`：支持 same-state comparison assumption 的 lab state-shape audit。
 - `mm-unstable-local-sanity/`：仅作本地 follow-up context。
-- `email/`：上游邮件草稿、回复草稿和中文审阅说明。
 - `bare-metal/`：新 i7-14700 节点上的真机复跑结果。当前 standalone A/B 中，
   `6.19.9` 相对 `6.12.77` 仍较慢；`6.19.9 + Pedro v3 patch-only` 未改善该
   standalone 结果。后续的 base-page attribution probe 能追回一部分 `6.19.9`

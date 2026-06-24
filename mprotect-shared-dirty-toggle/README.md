@@ -70,7 +70,6 @@ comparison.
 - `mm-unstable-lab-sanity/`: lab follow-up matrix for the small-folio optimization discussion.
 - `state-audit-lab/`: lab state-shape audit supporting the same-state comparison assumption.
 - `mm-unstable-local-sanity/`: local follow-up context only.
-- `email/`: upstream mail drafts, follow-up drafts, and Chinese review notes.
 - `bare-metal/`: i7-14700 bare-metal rerun results. The standalone A/B still
   shows `6.19.9` slower than `6.12.77`; `6.19.9 + Pedro v3` patch-only did
   not improve this standalone result. A later release-window narrowing shows

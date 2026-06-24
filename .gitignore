@@ -15,6 +15,11 @@ madvise-pageout-thp-noswap-refault/attribution/runs/
 analysis/lab-followup-*/
 analysis/lab-launch-*.log
 
+# Upstream mail drafts and local send notes are review material, not public
+# evidence. Keep them local unless the user explicitly asks to publish one.
+email/
+*/email/
+
 # Standalone reproducer validation keeps curated summaries and run metadata
 # public; raw runner directories and verbose logs remain local unless requested.
 mprotect-shared-dirty-toggle/reproducer-validation/raw/
