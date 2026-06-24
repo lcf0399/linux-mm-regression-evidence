@@ -13,22 +13,26 @@
 
 ## 编译和运行
 
+默认辅助脚本已经和当前 bare-metal evidence 使用的参数保持一致：
+
+```sh
+taskset -c 2 ./run_mprotect_shared_dirty_reproducer.sh
+```
+
+这等价于 `MAPPING_MB=64`、`ITERATIONS=1000`、`WARMUP=10`、
+`EXTERNAL_ROUNDS=9`。
+
+等价的手动运行方式是：
+
 ```sh
 gcc -O2 -Wall -Wextra -o mprotect_shared_dirty_reproducer \
   mprotect_shared_dirty_reproducer.c
 
 ./mprotect_shared_dirty_reproducer \
-  shared_dirty_full_toggle_64m 1 \
+  shared_dirty_full_toggle_64m 9 \
   --mapping-mb 64 \
-  --iterations 200 \
-  --warmup 5
-```
-
-也可以使用辅助脚本：
-
-```sh
-MAPPING_MB=64 ITERATIONS=200 WARMUP=5 EXTERNAL_ROUNDS=1 \
-  ./run_mprotect_shared_dirty_reproducer.sh
+  --iterations 1000 \
+  --warmup 10
 ```
 
 ## 输出
@@ -48,5 +52,5 @@ shared mapping，而不是 anonymous THP 路径：
 - `MMUPageSize = 4 kB`
 - `AnonHugePages = 0 kB`
 
-这个 reproducer 不依赖 experiment framework。父目录中的 formal evidence 仍然来自
-受控 QEMU/lab runs。
+这个 reproducer 不依赖 experiment framework。父目录中的 bare-metal evidence 是通过
+在同一台物理机上启动不同目标内核，然后运行这个 standalone reproducer 收集的。

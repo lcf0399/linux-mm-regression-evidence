@@ -6,9 +6,9 @@ cd "$(dirname "$0")"
 
 : "${CC:=gcc}"
 : "${MAPPING_MB:=64}"
-: "${ITERATIONS:=200}"
-: "${WARMUP:=5}"
-: "${EXTERNAL_ROUNDS:=1}"
+: "${ITERATIONS:=1000}"
+: "${WARMUP:=10}"
+: "${EXTERNAL_ROUNDS:=9}"
 : "${OUT:=/tmp/mprotect_shared_dirty_reproducer}"
 
 "$CC" -O2 -Wall -Wextra -o "$OUT" \

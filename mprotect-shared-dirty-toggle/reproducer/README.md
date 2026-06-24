@@ -14,22 +14,26 @@ experiment framework:
 
 ## Build And Run
 
+Default helper invocation matches the current bare-metal evidence settings:
+
+```sh
+taskset -c 2 ./run_mprotect_shared_dirty_reproducer.sh
+```
+
+That expands to `MAPPING_MB=64`, `ITERATIONS=1000`, `WARMUP=10`, and
+`EXTERNAL_ROUNDS=9`.
+
+Equivalent manual invocation:
+
 ```sh
 gcc -O2 -Wall -Wextra -o mprotect_shared_dirty_reproducer \
   mprotect_shared_dirty_reproducer.c
 
 ./mprotect_shared_dirty_reproducer \
-  shared_dirty_full_toggle_64m 1 \
+  shared_dirty_full_toggle_64m 9 \
   --mapping-mb 64 \
-  --iterations 200 \
-  --warmup 5
-```
-
-Or use the helper:
-
-```sh
-MAPPING_MB=64 ITERATIONS=200 WARMUP=5 EXTERNAL_ROUNDS=1 \
-  ./run_mprotect_shared_dirty_reproducer.sh
+  --iterations 1000 \
+  --warmup 10
 ```
 
 ## Output
@@ -51,5 +55,6 @@ expected shape is a base-page shared mapping, not an anonymous THP path:
 - `MMUPageSize = 4 kB`
 - `AnonHugePages = 0 kB`
 
-This reproducer does not require the experiment framework. The formal evidence
-in the parent directory still comes from the controlled QEMU/lab runs.
+This reproducer does not require the experiment framework. The bare-metal
+evidence in the parent directory was collected by booting each target kernel
+on the same physical machine and running this standalone reproducer.

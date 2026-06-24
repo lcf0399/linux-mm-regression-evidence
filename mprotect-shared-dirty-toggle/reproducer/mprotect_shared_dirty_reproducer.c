@@ -80,8 +80,8 @@ static void usage(const char *prog)
 	fprintf(stderr,
 		"usage: %s [SCENARIO] [EXTERNAL_ROUNDS] [--mapping-mb N] [--iterations N] [--warmup N]\n"
 		"\n"
-		"defaults: SCENARIO=shared_dirty_full_toggle_64m EXTERNAL_ROUNDS=1\n"
-		"          --mapping-mb 64 --iterations 200 --warmup 5\n",
+		"defaults: SCENARIO=shared_dirty_full_toggle_64m EXTERNAL_ROUNDS=9\n"
+		"          --mapping-mb 64 --iterations 1000 --warmup 10\n",
 		prog);
 }
 
@@ -95,9 +95,9 @@ static void parse_args(int argc, char **argv, struct options *opts)
 {
 	opts->scenario = "shared_dirty_full_toggle_64m";
 	opts->mapping_mb = 64;
-	opts->iterations = 200;
-	opts->external_rounds = 1;
-	opts->warmup = 5;
+	opts->iterations = 1000;
+	opts->external_rounds = 9;
+	opts->warmup = 10;
 
 	for (int i = 1; i < argc; i++) {
 		if (strcmp(argv[i], "--mapping-mb") == 0 && i + 1 < argc) {
