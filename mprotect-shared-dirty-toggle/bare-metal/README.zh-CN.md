@@ -39,28 +39,20 @@ rounds: 9 external rounds
   也没有比 `6.19.9` 原版改善。
 - `mm-unstable-pedro-444fc9435e57` 不是严格 patch-only 对照；它只作为后续基线 context。
 
-## 当前 6.16 standalone smoke
+另有一次 `6.16` single-point smoke 只用于确认 standalone reproducer 和 state check 在
+当前机器上能正常运行；该 smoke 不作为证据入口，raw 结果未保留。
+
+## 2026-06-23 5-kernel queue context
 
 结果目录：
 
 ```text
-20260623-standalone-6.16/
+20260623-kernel-queue-5kernels-3rounds/
 ```
 
-`6.16.0-bm-6.16` 当前单点复跑结果：
-
-```text
-iteration_ns_per_page=26
-protect_ns_per_page=8
-restore_ns_per_page=8
-post_touch_ns_per_page=8
-expected_match_ratio=100
-unexpected_results=0
-4 KiB/no THP
-```
-
-这说明当前 kernel/state 上 standalone reproducer 可正常运行。它不是替代上面跨版本 A/B
-的 formal conclusion。
+该队列用于早期真机 context：`6.12.77`、`6.19.9`、`6.19.9 + Pedro v3`、
+`7.0.9` 和 `mm-unstable-pedro` 各跑 3 次。它说明 Pedro v3 patch-only 没有改善这条
+standalone workload，但不负责 release-window narrowing。
 
 ## 2026-06-23 base-page attribution probe
 
