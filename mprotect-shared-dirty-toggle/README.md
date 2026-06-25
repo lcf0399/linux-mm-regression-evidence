@@ -65,11 +65,15 @@ comparison.
 - `reproducer-validation/`: lab validation summary for the standalone
   reproducer.
 - `experiments/`: formal experiment profile.
-- `formal-lab/perf_{1,2,4}cpu/`: performance runs with coverage disabled.
-- `formal-lab/coverage_1cpu/`: direct-hit coverage evidence collected separately from clean timing.
-- `mm-unstable-lab-sanity/`: lab follow-up matrix for the small-folio optimization discussion.
-- `state-audit-lab/`: lab state-shape audit supporting the same-state comparison assumption.
-- `mm-unstable-local-sanity/`: local follow-up context only.
+- `formal-lab-summary/`: compact public summary of the original formal lab
+  timing and direct-hit coverage evidence. The original raw runner output has
+  been moved to the ignored local-only `local-archive/` directory.
+- `mm-unstable-followup-summary/`: compact follow-up summary for the small-folio
+  optimization discussion. The original lab/local raw data has been moved to
+  the ignored local-only `local-archive/` directory.
+- `state-audit-summary/`: compact public summary of the lab state-shape audit
+  supporting the same-state comparison assumption. The original raw lab output
+  has been moved to the ignored local-only `local-archive/`.
 - `bare-metal/`: i7-14700 bare-metal rerun results. The standalone A/B still
   shows `6.19.9` slower than `6.12.77`; `6.19.9 + Pedro v3` patch-only did
   not improve this standalone result. A later release-window narrowing shows
@@ -81,7 +85,7 @@ comparison.
   revert; see
   `bare-metal/20260624-6.17-singlepte-probe/source-attribution-note.zh-CN.md`.
 
-For the follow-up directories, compact `results/` subdirectories contain the
-auditable `summary`, `raw`, `pipeline_run_env.json`, and `execution_order.json`
-files for each CPU/memory row. Full runner directories and verbose launch logs
-are excluded from the public bundle unless they become necessary for debugging.
+For the formal lab and follow-up matrices, the public bundle keeps compact
+metric summaries. Full runner directories, raw CSV/JSON, pipeline metadata, and
+verbose launch logs remain under the local-only `local-archive/` directory
+unless they become necessary for debugging.

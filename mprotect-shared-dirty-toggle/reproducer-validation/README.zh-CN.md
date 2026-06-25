@@ -71,7 +71,7 @@ reproducer 仍保持同样的大方向：`v6.19.9` 慢于 `v6.12.77`，当前
 这些 validation runs 是针对更小 reproducer 的 5 次重复 screening run，不替代前面的
 formal evidence。QEMU guest run 报告 `expected_match_ratio=100`、
 `unexpected_results=0`，但 minimal guest 环境没有提供和单独 state audit 一样的
-smaps state-shape 可见性。state-shape 结论仍以 `../state-audit-lab/` 为准。
+smaps state-shape 可见性。state-shape 结论仍以 `../state-audit-summary/` 为准。
 
 ## 文件
 

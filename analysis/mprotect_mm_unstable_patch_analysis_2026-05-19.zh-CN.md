@@ -129,9 +129,7 @@ order: interleaved
 结果目录：
 
 ```text
-mprotect-shared-dirty-toggle/mm-unstable-local-sanity/local_1cpu/
-mprotect-shared-dirty-toggle/mm-unstable-local-sanity/local_2cpu/
-mprotect-shared-dirty-toggle/mm-unstable-local-sanity/local_4cpu/
+mprotect-shared-dirty-toggle/mm-unstable-followup-summary/summary.csv
 ```
 
 主指标 `cycle_ns_per_page`，越低越好：
@@ -158,7 +156,7 @@ mprotect-shared-dirty-toggle/mm-unstable-local-sanity/local_4cpu/
 2026-05-20 已在 lab 上补跑 `1/2/4/8/16 CPU` matrix。结果目录：
 
 ```text
-mprotect-shared-dirty-toggle/mm-unstable-lab-sanity/
+mprotect-shared-dirty-toggle/mm-unstable-followup-summary/
 ```
 
 主指标 `cycle_ns_per_page`，越低越好：
@@ -186,7 +184,7 @@ signal，但没有消除相对 v6.12 的差距。
 类似 `MADV_PAGEOUT` 那样的“新老版本实际页状态不同”的问题：
 
 ```text
-mprotect-shared-dirty-toggle/state-audit-lab/summary-20260520.zh-CN.md
+mprotect-shared-dirty-toggle/state-audit-summary/summary-20260520.zh-CN.md
 ```
 
 这轮不是 timing evidence。它显示 `v6.12.77`、`v6.19.9`、`mm-unstable`

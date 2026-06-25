@@ -77,7 +77,7 @@ a replacement for the earlier formal evidence. The QEMU guest run reports
 `expected_match_ratio=100` and `unexpected_results=0`, but the minimal guest
 environment does not provide the same smaps state-shape visibility as the
 separate state audit. The state-shape conclusion remains based on
-`../state-audit-lab/`.
+`../state-audit-summary/`.
 
 ## Files
 

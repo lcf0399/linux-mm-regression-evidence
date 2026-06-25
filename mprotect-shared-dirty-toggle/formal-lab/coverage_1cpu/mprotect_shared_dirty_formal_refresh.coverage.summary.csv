@@ -1,3 +1,0 @@
-profile,source_file,entry_profile,test_kind,version_family,exact_version,subject_kind,subject,run_count,ok_runs,failed_runs,total_source_functions,total_functions,covered_functions_any,covered_functions_all,coverage_ratio_any,coverage_ratio_all,coverage_ratio_mean,coverage_ratio_min,coverage_ratio_max,failure_reasons
-mprotect_shared_dirty_formal_refresh,mm/mprotect.c,mprotect_paths,workload,6.12,6.12.77,scenario,shared_dirty_full_toggle_64m,9,9,0,18,15,10,10,0.666667,0.666667,0.666667,0.666667,0.666667,
-mprotect_shared_dirty_formal_refresh,mm/mprotect.c,mprotect_paths,workload,6.19,6.19.9,scenario,shared_dirty_full_toggle_64m,9,9,0,26,23,12,12,0.521739,0.521739,0.521739,0.521739,0.521739,

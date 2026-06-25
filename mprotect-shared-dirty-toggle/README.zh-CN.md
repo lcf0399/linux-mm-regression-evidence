@@ -61,11 +61,13 @@ cost，而不是 workload-state mismatch comparison。
   experiment framework。
 - `reproducer-validation/`：standalone reproducer 的 lab 验证总结。
 - `experiments/`：formal experiment profile。
-- `formal-lab/perf_{1,2,4}cpu/`：coverage disabled 的 performance run。
-- `formal-lab/coverage_1cpu/`：与 clean timing 分开收集的 direct-hit coverage 证据。
-- `mm-unstable-lab-sanity/`：small-folio optimization 讨论使用的 lab follow-up matrix。
-- `state-audit-lab/`：支持 same-state comparison assumption 的 lab state-shape audit。
-- `mm-unstable-local-sanity/`：仅作本地 follow-up context。
+- `formal-lab-summary/`：最早 formal lab timing 和 direct-hit coverage 证据的公开
+  精简摘要。原始 runner output 已移到本地忽略的 `local-archive/`。
+- `mm-unstable-followup-summary/`：small-folio optimization 讨论使用的轻量 follow-up
+  summary。原始 lab/local raw 已移到本地忽略的 `local-archive/`。
+- `state-audit-summary/`：支持 same-state comparison assumption 的 lab
+  state-shape audit 公开精简摘要。原始 lab output 已移到本地忽略的
+  `local-archive/`。
 - `bare-metal/`：新 i7-14700 节点上的真机复跑结果。当前 standalone A/B 中，
   `6.19.9` 相对 `6.12.77` 仍较慢；`6.19.9 + Pedro v3 patch-only` 未改善该
   standalone 结果。后续的 base-page attribution probe 能追回一部分 `6.19.9`
@@ -76,6 +78,6 @@ cost，而不是 workload-state mismatch comparison。
   该 probe 不是 exact commit revert；细节见
   `bare-metal/20260624-6.17-singlepte-probe/source-attribution-note.zh-CN.md`。
 
-follow-up 目录中的精简 `results/` 子目录保存每个 CPU/memory 行可审计的
-`summary`、`raw`、`pipeline_run_env.json` 和 `execution_order.json`。完整 runner
-目录和冗长 launch logs 默认不放入公开证据包，除非后续 debug 需要。
+formal lab 和 follow-up matrix 的 public bundle 只保留精简指标汇总。完整 runner
+目录、raw CSV/JSON、pipeline metadata 和冗长 launch logs 保留在本地
+`local-archive/`，默认不上传，除非后续 debug 需要。

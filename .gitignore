@@ -1,11 +1,5 @@
 # Keep bulky follow-up runner outputs local unless explicitly curated.
-mprotect-shared-dirty-toggle/mm-unstable-lab-sanity/lab_*/
-mprotect-shared-dirty-toggle/mm-unstable-lab-sanity/lab-logs-*/
-mprotect-shared-dirty-toggle/mm-unstable-lab-sanity/lab-launch-*.log
-mprotect-shared-dirty-toggle/mm-unstable-local-sanity/local_*/
-mprotect-shared-dirty-toggle/state-audit-lab/lab_*/
-mprotect-shared-dirty-toggle/state-audit-lab/lab-logs-*/
-mprotect-shared-dirty-toggle/state-audit-lab/lab-launch-*.log
+mprotect-shared-dirty-toggle/local-archive/
 
 # Attribution raw traces/logs can be large; keep published notes in
 # attribution/summaries/ and scripts/ unless a maintainer asks for raw logs.
