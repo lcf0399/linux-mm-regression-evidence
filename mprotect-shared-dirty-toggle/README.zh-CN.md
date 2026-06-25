@@ -1,24 +1,60 @@
 # mprotect shared-dirty toggle 证据
 
-这个目录支撑以下报告：
+这个目录当前支撑面向上游的报告：
 
 ```text
-[REGRESSION] mm/mprotect: shared dirty PTE toggle path is ~40% slower on v6.19 than v6.12
+[REGRESSION] mm/mprotect: shared-dirty base-page toggle slower since v6.17
 ```
 
 ## 结论范围
 
-这是一个用户态可见的 `mprotect()` workload：
+这是一个刻意收窄的用户态可见 `mprotect()` workload：
 
-- shared dirty 64 MiB mapping
-- 反复做 full-range protection toggle
-- 关注 shared-dirty PTE path
+- 64 MiB `MAP_SHARED | MAP_ANONYMOUS` mapping
+- 已经 prefault 并写脏的 4 KiB base pages，无 THP
+- 反复对整段 mapping 做 `mprotect(PROT_READ)`
+- 再用 `mprotect(PROT_READ | PROT_WRITE)` 恢复写权限
+- 每轮 protect/restore 后再 write-touch
 
 它不声称存在泛化的 `mprotect()` regression，也不声称 `anon_full_toggle` 或 THP mprotect regression。
 
-## 关键结果
+## 当前真机结论
 
-Formal lab timing 显示 `v6.19.9` 慢于 `v6.12.77`。
+当前最适合给维护者看的证据，是 i7-14700 真机上的 standalone rerun。它把 slowdown
+缩小到 `v6.16 -> v6.17` release window。
+
+主指标：`iteration_ns_per_page`，越低越好。
+
+| Kernel | values | mean |
+| --- | --- | ---: |
+| `v6.16` | 25 25 25 | 25.000 |
+| `v6.17` | 37 37 37 | 37.000 |
+| `v6.18` | 38 38 38 | 38.000 |
+| `v6.18.19` | 38 38 38 | 38.000 |
+| `v6.19.9` | 37 36 37 | 36.667 |
+
+所有 run 都报告 `expected_match_ratio=100`、`unexpected_results=0`。
+
+一个 attribution-only 的 v6.17 single-PTE probe 能把 standalone 结果拉回 v6.16
+快区间：
+
+| Kernel | values | mean |
+| --- | --- | ---: |
+| `v6.16` | 25 25 25 | 25.000 |
+| `v6.17` | 37 37 37 | 37.000 |
+| `v6.17 single-PTE probe` | 25 25 25 | 25.000 |
+
+这个 probe 不是 exact commit revert，也不是要提交给上游的 patch。它只是机制归因证据，
+指向该 workload 在 `mm/mprotect.c::change_pte_range()` 中的 v6.17 PTE-batching
+hot-path shape。
+
+`v6.19.9 + Pedro v3 patch-only` 和后续 mm-unstable/Pedro follow-up 都没有改善这条
+standalone bare-metal 结果。
+
+## 早期 Lab/QEMU 背景
+
+早期 formal lab timing 显示 `v6.19.9` 慢于 `v6.12.77`。这部分现在保留为历史候选证据
+和背景，不再作为当前面向上游的主结论。
 
 `cycle_ns_per_page`：
 
@@ -31,11 +67,13 @@ Formal lab timing 显示 `v6.19.9` 慢于 `v6.12.77`。
 单独做过的 release-level sanity check 显示 `v6.18.19` 已经进入慢区间，但这些 raw run
 没有放入当前精简公开证据包。
 
-## 后续结果
+## 早期 mm-unstable Lab Follow-up
 
 David Hildenbrand 指向了 Pedro Falcato 最近的 small-folio mprotect optimization。
 针对 `akpm/mm mm-unstable 444fc9435e57` 的 lab sanity matrix 显示，这个 workload
 里出现了部分缓解，但没有回到 `v6.12.77` 的 timing：
+
+这一节是早期 QEMU/lab follow-up context，不应和上面的后续真机 standalone 结果混在一起。
 
 | CPU | v6.12.77 | v6.19.9 | mm-unstable | mm-unstable vs v6.19 | gap closed |
 |---:|---:|---:|---:|---:|---:|

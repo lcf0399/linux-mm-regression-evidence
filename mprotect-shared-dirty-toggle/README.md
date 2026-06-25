@@ -1,24 +1,62 @@
 # mprotect Shared-dirty Toggle Evidence
 
-This directory supports the report:
+This directory currently supports the upstream-facing report:
 
 ```text
-[REGRESSION] mm/mprotect: shared dirty PTE toggle path is ~40% slower on v6.19 than v6.12
+[REGRESSION] mm/mprotect: shared-dirty base-page toggle slower since v6.17
 ```
 
 ## Claim scope
 
-This is a userspace-visible `mprotect()` workload:
+This is a deliberately narrow userspace-visible `mprotect()` workload:
 
-- shared dirty 64 MiB mapping
-- repeated full-range protection toggle
-- focus on the shared-dirty PTE path
+- 64 MiB `MAP_SHARED | MAP_ANONYMOUS` mapping
+- prefaulted and write-dirtied 4 KiB base pages, no THP
+- repeated full-range `mprotect(PROT_READ)`
+- restore with `mprotect(PROT_READ | PROT_WRITE)`
+- write-touch after each protect/restore cycle
 
 It does not claim a generic `mprotect()` regression, and does not claim `anon_full_toggle` or THP mprotect regression.
 
-## Key result
+## Current Bare-metal Result
 
-Formal lab timing shows `v6.19.9` slower than `v6.12.77`.
+The current maintainer-facing evidence is the i7-14700 bare-metal standalone
+rerun.  It narrows the slowdown to the `v6.16 -> v6.17` release window.
+
+Main metric: `iteration_ns_per_page`, lower is better.
+
+| Kernel | values | mean |
+| --- | --- | ---: |
+| `v6.16` | 25 25 25 | 25.000 |
+| `v6.17` | 37 37 37 | 37.000 |
+| `v6.18` | 38 38 38 | 38.000 |
+| `v6.18.19` | 38 38 38 | 38.000 |
+| `v6.19.9` | 37 36 37 | 36.667 |
+
+All runs reported `expected_match_ratio=100` and `unexpected_results=0`.
+
+An attribution-only v6.17 single-PTE probe brings the standalone result back to
+the v6.16 fast range:
+
+| Kernel | values | mean |
+| --- | --- | ---: |
+| `v6.16` | 25 25 25 | 25.000 |
+| `v6.17` | 37 37 37 | 37.000 |
+| `v6.17 single-PTE probe` | 25 25 25 | 25.000 |
+
+That probe is not an exact commit revert and is not proposed as an upstream
+patch.  It is mechanism-attribution evidence pointing at the v6.17
+PTE-batching hot-path shape in `mm/mprotect.c::change_pte_range()` for this
+workload.
+
+`v6.19.9 + Pedro v3 patch-only` and the later mm-unstable/Pedro follow-up did
+not improve this standalone bare-metal result.
+
+## Earlier Lab/QEMU Context
+
+The earlier formal lab timing, before the bare-metal rerun, showed `v6.19.9`
+slower than `v6.12.77`.  This is kept as historical candidate evidence and
+background context, not as the current upstream-facing conclusion.
 
 `cycle_ns_per_page`:
 
@@ -28,14 +66,18 @@ Formal lab timing shows `v6.19.9` slower than `v6.12.77`.
 | 2 | 394.7 | 641.7 | -38.5% | robust-only |
 | 4 | 381.1 | 624.8 | -39.0% | partial same direction |
 
-Separate release-level sanity checks showed `v6.18.19` already in the slow range, but those raw runs are kept out of this compact public evidence bundle.
+Separate release-level sanity checks showed `v6.18.19` already in the slow
+range, but those raw runs are kept out of this compact public evidence bundle.
 
-## Follow-up Results
+## Earlier mm-unstable Lab Follow-up
 
 David Hildenbrand pointed to Pedro Falcato's recent small-folio mprotect
 optimization. A lab sanity matrix against `akpm/mm mm-unstable
 444fc9435e57` shows partial mitigation in this workload, but not a return
 to `v6.12.77` timing:
+
+This section is earlier QEMU/lab follow-up context.  It should not be merged
+with the later bare-metal standalone result above.
 
 | CPU | v6.12.77 | v6.19.9 | mm-unstable | mm-unstable vs v6.19 | gap closed |
 |---:|---:|---:|---:|---:|---:|
