@@ -52,6 +52,38 @@ workload.
 `v6.19.9 + Pedro v3 patch-only` and the later mm-unstable/Pedro follow-up did
 not improve this standalone bare-metal result.
 
+## 2026-06-30 single-protect follow-up
+
+To check whether the signal only comes from repeated `RW -> R -> RW` toggling,
+I added a narrower follow-up where each timed iteration creates a fresh
+shared-dirty mapping and times exactly one `mprotect(PROT_READ)`.
+
+Result directory:
+
+```text
+bare-metal/20260630-single-protect-followup/
+```
+
+Main metric: `single_protect_ns_per_page`, lower is better.
+
+| Kernel | values | mean | vs v6.16 |
+| --- | --- | ---: | ---: |
+| `v6.16` | 8 8 8 | 8.000 | baseline |
+| `v6.17` | 14 14 14 | 14.000 | +75.0% |
+| `v7.1` | 18 15 18 | 17.000 | +112.5% |
+
+All runs reported `expected_match_ratio=100` and `unexpected_results=0`.
+
+This shows that a single `mprotect(PROT_READ)` on the prepared shared-dirty
+range already reproduces the `v6.16 -> v6.17` slowdown.  It is supporting
+evidence for the same `mprotect()` PTE update path, not a separate regression
+claim.
+
+Related exploratory `mmap_lock` and `mmu_notifier` routes also observed timing
+signals, but split/no-KVM/KVM attribution showed their main difference comes
+back to the `mprotect()` permission-change/restore path.  They are kept as
+supporting attribution only, not as independent upstream claims.
+
 ## Earlier Lab/QEMU Context
 
 The earlier formal lab timing, before the bare-metal rerun, showed `v6.19.9`
@@ -126,6 +158,8 @@ comparison.
   `mm/mprotect.c::change_pte_range()`. The probe is not an exact commit
   revert; see
   `bare-metal/20260624-6.17-singlepte-probe/source-attribution-note.zh-CN.md`.
+  The later `bare-metal/20260630-single-protect-followup/` directory shows that
+  a single protect operation also reproduces the same release-window slowdown.
 
 For the formal lab and follow-up matrices, the public bundle keeps compact
 metric summaries. Full runner directories, raw CSV/JSON, pipeline metadata, and

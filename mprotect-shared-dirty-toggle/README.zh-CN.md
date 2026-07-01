@@ -51,6 +51,36 @@ hot-path shape。
 `v6.19.9 + Pedro v3 patch-only` 和后续 mm-unstable/Pedro follow-up 都没有改善这条
 standalone bare-metal 结果。
 
+## 2026-06-30 single-protect 补充
+
+为了检查信号是否只来自反复 `RW -> R -> RW` toggle，我补了一个更窄的 follow-up：
+每个 timed iteration 重新准备一个 shared-dirty mapping，只计时一次
+`mprotect(PROT_READ)`。
+
+结果目录：
+
+```text
+bare-metal/20260630-single-protect-followup/
+```
+
+主指标：`single_protect_ns_per_page`，越低越好。
+
+| Kernel | values | mean | vs v6.16 |
+| --- | --- | ---: | ---: |
+| `v6.16` | 8 8 8 | 8.000 | baseline |
+| `v6.17` | 14 14 14 | 14.000 | +75.0% |
+| `v7.1` | 18 15 18 | 17.000 | +112.5% |
+
+所有 run 都报告 `expected_match_ratio=100`、`unexpected_results=0`。
+
+这说明：在准备好的 shared-dirty range 上，单次 `mprotect(PROT_READ)` 本身已经复现
+`v6.16 -> v6.17` slowdown。它是同一条 `mprotect()` PTE update path 的补充证据，
+不是独立的新 regression claim。
+
+另外，探索性的 `mmap_lock` 和 `mmu_notifier` 路线也观察到 timing signal，但
+split/no-KVM/KVM attribution 显示主差异仍回到 `mprotect()` permission-change /
+restore 路径。它们只保留为 supporting attribution，不作为独立上游 claim。
+
 ## 早期 Lab/QEMU 背景
 
 早期 formal lab timing 显示 `v6.19.9` 慢于 `v6.12.77`。这部分现在保留为历史候选证据
@@ -115,6 +145,8 @@ cost，而不是 workload-state mismatch comparison。
   `mm/mprotect.c::change_pte_range()` 的 v6.17 PTE-batching hot-path shape。
   该 probe 不是 exact commit revert；细节见
   `bare-metal/20260624-6.17-singlepte-probe/source-attribution-note.zh-CN.md`。
+  后续 `bare-metal/20260630-single-protect-followup/` 说明单次 protect 操作本身也能
+  复现同一个 release-window slowdown。
 
 formal lab 和 follow-up matrix 的 public bundle 只保留精简指标汇总。完整 runner
 目录、raw CSV/JSON、pipeline metadata 和冗长 launch logs 保留在本地

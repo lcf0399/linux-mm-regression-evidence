@@ -1,6 +1,6 @@
 # mprotect shared-dirty toggle bare-metal results
 
-Updated: 2026-06-24 UTC
+Updated: 2026-06-30 UTC
 
 This directory contains the i7-14700 bare-metal reruns for the standalone
 `mprotect()` shared-dirty toggle reproducer.  It checks whether the earlier
@@ -169,3 +169,30 @@ The source-attribution and exact-revert caveat are recorded in:
 ```text
 20260624-6.17-singlepte-probe/source-attribution-note.zh-CN.md
 ```
+
+## 2026-06-30 single-protect follow-up
+
+Result directory:
+
+```text
+20260630-single-protect-followup/
+```
+
+This follow-up checks whether the slowdown only appears in the repeated
+protect/restore loop.  Each timed iteration creates a fresh shared-dirty
+mapping, write-prefaults it, and times exactly one `mprotect(PROT_READ)`.
+
+Main metric: `single_protect_ns_per_page`, lower is better.
+
+```text
+kernel                 n  single_protect_mean  values
+6.16.0-bm-6.16        3                 8.000  8 8 8
+6.17.0-bm-6.17        3                14.000  14 14 14
+7.1.0-bm-7.1          3                17.000  18 15 18
+```
+
+All steps reported `expected_match_ratio=100` and `unexpected_results=0`.
+
+This shows that the `v6.16 -> v6.17` slowdown is visible even for a single
+`mprotect(PROT_READ)` on the prepared shared-dirty range.  It is supporting
+evidence for the existing mprotect report, not a separate claim.
